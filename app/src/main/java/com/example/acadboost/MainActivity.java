@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
         getStartedbutton = findViewById(R.id.getStartedButton);
 
         //Connection
-
-        Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
+        //MongoDB
+        //Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
 
         //Animations
 
@@ -174,19 +174,24 @@ public class MainActivity extends AppCompatActivity {
         email = emailEditText.getText().toString();
 
 
-        UserPasswordAuthProviderClient newUser = Stitch.getDefaultAppClient().getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
+        //SIGNUP and send confirmation email using MongoDB
+        //after sending email goto login act.
+//        UserPasswordAuthProviderClient newUser = Stitch.getDefaultAppClient().getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
+//
+//        newUser.registerWithEmail(email,password).addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                if(task.isSuccessful()) {
+//                    Toast.makeText(MainActivity.this, "Email Sent", Toast.LENGTH_SHORT).show();
+//                   goToLogin();
+//                }else {
+//                    Toast.makeText(MainActivity.this, "This Email is already registered", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
-        newUser.registerWithEmail(email,password).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, "Email Sent", Toast.LENGTH_SHORT).show();
-                    goToLogin();
-                }else {
-                    Toast.makeText(MainActivity.this, "This Email is already registered", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        //Todo:- save user in dynamoDB table and send confirmation email (user can login only after email verification) after sendind email redirect to login
+        goToLogin();
 
     }
 
