@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Home"
+        android:icon="@drawable/ic_home"
+        android:id="@+id/homeMenu"/>
+
+    <item
+        android:title="Vidoes"
+        android:icon="@drawable/ic_video"
+        android:id="@+id/videoMenu"/>
+
+    <item
+        android:title="Profile"
+        android:icon="@drawable/ic_person"
+        android:id="@+id/userMenu"/>
+
+</menu>

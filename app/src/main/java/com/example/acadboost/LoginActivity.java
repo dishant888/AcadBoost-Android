@@ -1,6 +1,5 @@
 package com.example.acadboost;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -12,11 +11,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.mongodb.stitch.android.core.Stitch;
-import com.mongodb.stitch.android.core.auth.StitchUser;
-import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.Task;
+//import com.mongodb.stitch.android.core.Stitch;
+//import com.mongodb.stitch.android.core.auth.StitchUser;
+//import com.mongodb.stitch.core.auth.providers.userpassword.UserPasswordCredential;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,18 +39,30 @@ public class LoginActivity extends AppCompatActivity {
             emailString = emailEditText.getText().toString();
             passwordString = passwordEditText.getText().toString();
 
-            UserPasswordCredential credentials = new UserPasswordCredential(emailString,passwordString);
-            Stitch.getDefaultAppClient().getAuth().loginWithCredential(credentials).addOnCompleteListener(new OnCompleteListener<StitchUser>() {
-                @Override
-                public void onComplete(@NonNull Task<StitchUser> task) {
-                    if(task.isSuccessful()) {
-                        Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
-                        startActivity(intent);
-                    }else {
-                        Toast.makeText(LoginActivity.this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+
+              //MongoDb login
+//            UserPasswordCredential credentials = new UserPasswordCredential(emailString,passwordString);
+//            Stitch.getDefaultAppClient().getAuth().loginWithCredential(credentials).addOnCompleteListener(new OnCompleteListener<StitchUser>() {
+//                @Override
+//                public void onComplete(@NonNull Task<StitchUser> task) {
+//                    if(task.isSuccessful()) {
+//                        Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+//                        startActivity(intent);
+//                    }else {
+//                        Toast.makeText(LoginActivity.this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
+
+            //Todo:- before user log in check if email is verified
+            if(emailString.equals("dishant@gmail.com") && passwordString.equals("dishant")) {
+                Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
     }

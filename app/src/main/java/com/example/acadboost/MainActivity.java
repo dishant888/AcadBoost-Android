@@ -1,11 +1,9 @@
 package com.example.acadboost;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaCodec;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -16,14 +14,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.mongodb.stitch.android.core.Stitch;
-import com.mongodb.stitch.android.core.auth.StitchUser;
-import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.Task;
+//import com.mongodb.stitch.android.core.Stitch;
+//import com.mongodb.stitch.android.core.auth.StitchUser;
+//import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,16 +30,18 @@ public class MainActivity extends AppCompatActivity {
     TextView textView,appName,textView3,loginTextView;
     Button getStartedbutton;
     View bottomSheetView;
-    StitchUser user;
+    //StitchUser user;
 
     @Override
     protected void onStart() {
         super.onStart();
-        user = Stitch.getAppClient("acadboost-rauqg").getAuth().getUser();
-        if(user != null) {
-            startActivity(new Intent(getApplicationContext(),HomeActivity.class));
-            finish();
-        }
+
+        //Todo :- if user is already logged in redirect to Home
+//        user = Stitch.getAppClient("acadboost-rauqg").getAuth().getUser();
+//        if(user != null) {
+//            startActivity(new Intent(getApplicationContext(),HomeActivity.class));
+//            finish();
+//        }
     }
 
     @Override
@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
     public void goToLogin() {
         Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void loginClick(View view) {
