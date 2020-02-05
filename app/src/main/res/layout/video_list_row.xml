@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="75dp"
+        android:id="@+id/videoListImage"
+        android:src="@color/colorTheme"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video Title"
+            android:id="@+id/videoListTitle"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:textSize="18dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/videoListDescription"
+            android:layout_height="wrap_content"
+            android:text="This is description for the video.This is description for the video...."/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
