@@ -3,11 +3,30 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="USER"
-        android:textColor="#111111"
-        android:gravity="center"/>
+        android:layout_height="200dp"
+        android:background="@color/colorTheme">
+
+        <ImageView
+            android:layout_height="95dp"
+            android:layout_width="95dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/rounded_profile_image"
+            android:src="@drawable/ic_person"/>
+
+        <TextView
+            android:layout_marginTop="140dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Dishant Sukhwal"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"/>
+
+    </FrameLayout>
 
 </LinearLayout>
