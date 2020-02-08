@@ -14,9 +14,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.apollographql.apollo.GraphQLCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.Toast;
 
+import javax.annotation.Nonnull;
+
+import type.CreateUserInput;
+
+//Mongodb
 //import com.google.android.gms.tasks.OnCompleteListener;
 //import com.google.android.gms.tasks.Task;
 //import com.mongodb.stitch.android.core.Stitch;
@@ -30,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView,appName,textView3,loginTextView;
     Button getStartedbutton;
     View bottomSheetView;
+    private AWSAppSyncClient awsAppSyncClient;
     //StitchUser user;
 
     @Override
@@ -70,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
         getStartedbutton.animate().translationY(0).setDuration(800).setStartDelay(400);
         textView3.animate().translationY(0).setDuration(800).setStartDelay(700);
         loginTextView.animate().translationY(0).setDuration(800).setStartDelay(700);
+
+        //Initialize AWSAppSync Client
+        awsAppSyncClient = AWSAppSyncClient.builder()
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .build();
 
         //Bottom Sheet Show
 
@@ -168,10 +187,10 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText = bottomSheetView.findViewById(R.id.passwordEditText);
         emailEditText = bottomSheetView.findViewById(R.id.emailEditText);
 
-        String name,password,email;
-        name = nameEditText.getText().toString();
-        password = passwordEditText.getText().toString();
-        email = emailEditText.getText().toString();
+        String nameStr,passwordStr,emailStr;
+        nameStr = nameEditText.getText().toString();
+        passwordStr = passwordEditText.getText().toString();
+        emailStr = emailEditText.getText().toString();
 
 
         //SIGNUP and send confirmation email using MongoDB
@@ -190,10 +209,30 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        //Todo:- save user in dynamoDB table and send confirmation email (user can login only after email verification) after sendind email redirect to login
-        goToLogin();
+        //Todo:- save user in dynamoDB table and send confirmation email (user can login only after email verification) after sending email redirect to login
 
+        //Save User
+        CreateUserInput user = CreateUserInput.builder()
+                .id("1").name(nameStr).email(emailStr).password(passwordStr)
+                .build();
+
+        awsAppSyncClient.mutate(CreateUserMutation.builder().input(user).build()).enqueue(createUserCallback);
+
+        //goToLogin();
     }
+
+    //Callback for user creation
+    private GraphQLCall.Callback<CreateUserMutation.Data> createUserCallback = new GraphQLCall.Callback<CreateUserMutation.Data>() {
+        @Override
+        public void onResponse(@Nonnull Response<CreateUserMutation.Data> response) {
+            Toast.makeText(MainActivity.this, "Created", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFailure(@Nonnull ApolloException e) {
+            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     public void goToLogin() {
         Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
