@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,24 +17,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
+import com.amazonaws.amplify.generated.graphql.ListUsersQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 import javax.annotation.Nonnull;
 
 import type.CreateUserInput;
+import type.ModelStringInput;
+import type.ModelUserFilterInput;
 
-//Mongodb
-//import com.google.android.gms.tasks.OnCompleteListener;
-//import com.google.android.gms.tasks.Task;
-//import com.mongodb.stitch.android.core.Stitch;
-//import com.mongodb.stitch.android.core.auth.StitchUser;
-//import com.mongodb.stitch.android.core.auth.providers.userpassword.UserPasswordAuthProviderClient;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     Button getStartedbutton;
     View bottomSheetView;
     private AWSAppSyncClient awsAppSyncClient;
-    //StitchUser user;
+    String uuid;
 
     @Override
     protected void onStart() {
@@ -71,9 +72,11 @@ public class MainActivity extends AppCompatActivity {
         loginTextView = findViewById(R.id.loginTextView);
         getStartedbutton = findViewById(R.id.getStartedButton);
 
-        //Connection
-        //MongoDB
-        //Stitch.initializeDefaultAppClient(getResources().getString(R.string.my_app_id));
+        //Initialize AWSAppSync Client
+        awsAppSyncClient = AWSAppSyncClient.builder()
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .build();
 
         //Animations
 
@@ -83,12 +86,6 @@ public class MainActivity extends AppCompatActivity {
         getStartedbutton.animate().translationY(0).setDuration(800).setStartDelay(400);
         textView3.animate().translationY(0).setDuration(800).setStartDelay(700);
         loginTextView.animate().translationY(0).setDuration(800).setStartDelay(700);
-
-        //Initialize AWSAppSync Client
-        awsAppSyncClient = AWSAppSyncClient.builder()
-                .context(getApplicationContext())
-                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
-                .build();
 
         //Bottom Sheet Show
 
@@ -193,44 +190,42 @@ public class MainActivity extends AppCompatActivity {
         emailStr = emailEditText.getText().toString();
 
 
-        //SIGNUP and send confirmation email using MongoDB
-        //after sending email goto login act.
-//        UserPasswordAuthProviderClient newUser = Stitch.getDefaultAppClient().getAuth().getProviderClient(UserPasswordAuthProviderClient.factory);
-//
-//        newUser.registerWithEmail(email,password).addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                if(task.isSuccessful()) {
-//                    Toast.makeText(MainActivity.this, "Email Sent", Toast.LENGTH_SHORT).show();
-//                   goToLogin();
-//                }else {
-//                    Toast.makeText(MainActivity.this, "This Email is already registered", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
         //Todo:- save user in dynamoDB table and send confirmation email (user can login only after email verification) after sending email redirect to login
 
         //Save User
+        uuid = UUID.randomUUID().toString();
         CreateUserInput user = CreateUserInput.builder()
-                .id("1").name(nameStr).email(emailStr).password(passwordStr)
+                .id(uuid).name(nameStr).email(emailStr).password(passwordStr)
                 .build();
 
         awsAppSyncClient.mutate(CreateUserMutation.builder().input(user).build()).enqueue(createUserCallback);
-
-        //goToLogin();
     }
+
 
     //Callback for user creation
     private GraphQLCall.Callback<CreateUserMutation.Data> createUserCallback = new GraphQLCall.Callback<CreateUserMutation.Data>() {
         @Override
         public void onResponse(@Nonnull Response<CreateUserMutation.Data> response) {
-            Toast.makeText(MainActivity.this, "Created", Toast.LENGTH_SHORT).show();
+            Log.i("Success",response.toString());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
+                }
+            });
+            goToLogin();
         }
 
         @Override
         public void onFailure(@Nonnull ApolloException e) {
-            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            Log.i("Error",e.toString());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, "Please try after some time", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     };
 
