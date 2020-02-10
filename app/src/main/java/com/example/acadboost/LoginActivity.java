@@ -20,6 +20,13 @@ import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
+import org.json.JSONArray;
+
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import javax.annotation.Nonnull;
 
 import type.ModelStringInput;
@@ -30,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText emailEditText,passwordEditText;
     private AWSAppSyncClient awsAppSyncClient;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,9 @@ public class LoginActivity extends AppCompatActivity {
             emailStr = emailEditText.getText().toString();
             passwordStr = passwordEditText.getText().toString();
 
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+
 
             //Todo:- before user log in check if email is verified
 
@@ -71,6 +82,18 @@ public class LoginActivity extends AppCompatActivity {
                             //Log.i("Found",response.data().listUsers().items().toString());
                             if(!response.data().listUsers().items().isEmpty()){
                                 Log.i("Valid","User found");
+
+                                //Session Start
+                                session = new SessionManager(getApplicationContext());
+
+                                for(ListUsersQuery.Item data : response.data().listUsers().items()) {
+                                    String name,email,id;
+                                    name = data.name().toString();
+                                    email = data.email().toString();
+                                    id = data.id().toString();
+                                    session.startSession(name,email,id);
+                                }
+
                                 Intent login = new Intent(getApplicationContext(),HomeActivity.class);
                                 startActivity(login);
                                 finish();
@@ -127,4 +150,5 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
+
 }

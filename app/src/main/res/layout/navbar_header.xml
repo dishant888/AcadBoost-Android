@@ -14,7 +14,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dishant Sukhwal"
+        android:text=""
+        android:id="@+id/navBarHeaderUserName"
         android:textColor="@color/colorWhite"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -23,7 +24,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="dishant@gmail.com"
+        android:text=""
+        android:id="@+id/navBarHeaderUserEmail"
         android:textColor="@color/colorWhite"
         android:textSize="14sp"
         android:textStyle="italic"/>

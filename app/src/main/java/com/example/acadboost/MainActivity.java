@@ -47,23 +47,27 @@ public class MainActivity extends AppCompatActivity {
     private AWSAppSyncClient awsAppSyncClient;
     String uuid;
     EditText nameEditText,passwordEditText,emailEditText;
+    SessionManager session;
 
     @Override
     protected void onStart() {
         super.onStart();
 
         //Todo :- if user is already logged in redirect to Home
-//        user = Stitch.getAppClient("acadboost-rauqg").getAuth().getUser();
-//        if(user != null) {
-//            startActivity(new Intent(getApplicationContext(),HomeActivity.class));
-//            finish();
-//        }
+        if(session.isUserLoggedIn()) {
+            Intent login = new Intent(getApplicationContext(),HomeActivity.class);
+            login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(login);
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        session = new SessionManager(getApplicationContext());
 
         imageView = findViewById(R.id.imageView);
         imageView.setImageResource(R.drawable.pencilimage);
@@ -238,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
     private GraphQLCall.Callback<CreateUserMutation.Data> createUserCallback = new GraphQLCall.Callback<CreateUserMutation.Data>() {
         @Override
         public void onResponse(@Nonnull Response<CreateUserMutation.Data> response) {
-            Log.i("Success",response.toString());
+            //Log.i("Success",response.toString());
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -263,6 +267,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToLogin() {
         Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }

@@ -1,8 +1,6 @@
 package com.example.acadboost;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,18 +8,25 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import org.w3c.dom.Text;
+
+import java.util.HashMap;
+
 
 public class HomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,17 @@ public class HomeActivity extends AppCompatActivity {
         //Navigation Drawer
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(drawerListner);
+
+        //Session
+        session = new SessionManager(getApplicationContext());
+        HashMap<String, String> sessionData = session.getSessionData();
+        //Set session data to nav header
+        View navigationHeaderView = navigationView.getHeaderView(0);
+        TextView navBarHeaderUserName = navigationHeaderView.findViewById(R.id.navBarHeaderUserName);
+        TextView navBarHeaderUserEmail = navigationHeaderView.findViewById(R.id.navBarHeaderUserEmail);
+        navBarHeaderUserName.setText(sessionData.get(SessionManager.NAME));
+        navBarHeaderUserEmail.setText(sessionData.get(SessionManager.EMAIL));
+
     }
 
 
@@ -95,9 +111,21 @@ public class HomeActivity extends AppCompatActivity {
     };
 
     public void logout() {
-        Intent logout = new Intent(getApplicationContext(),LoginActivity.class);
-        startActivity(logout);
+
+        session.endSession();
+        Intent login = new Intent(getApplicationContext(),LoginActivity.class);
+        login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(login);
         finish();
     }
 
+    //Drawer toggler
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(toggle.onOptionsItemSelected(item)){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

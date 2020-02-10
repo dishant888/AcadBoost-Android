@@ -18,11 +18,12 @@
             android:src="@drawable/ic_person"/>
 
         <TextView
+            android:id="@+id/userFragmentUserName"
             android:layout_marginTop="140dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Dishant Sukhwal"
+            android:text=""
             android:textSize="18dp"
             android:textStyle="bold"
             android:textColor="@color/colorWhite"/>
