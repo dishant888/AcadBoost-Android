@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
+import com.amazonaws.amplify.generated.graphql.GetUserQuery;
 import com.amazonaws.amplify.generated.graphql.ListUsersQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
@@ -24,6 +25,7 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.Toast;
 
@@ -36,7 +38,6 @@ import type.ModelStringInput;
 import type.ModelUserFilterInput;
 
 
-
 public class MainActivity extends AppCompatActivity {
 
     ImageView imageView,googleLoginImageView,facebookLoginImageView,linkedinLoginImageView;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     View bottomSheetView;
     private AWSAppSyncClient awsAppSyncClient;
     String uuid;
+    EditText nameEditText,passwordEditText,emailEditText;
 
     @Override
     protected void onStart() {
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         getStartedbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BottomSheetDialog getStartedBottomSheetDialog = new BottomSheetDialog(
+                final BottomSheetDialog getStartedBottomSheetDialog = new BottomSheetDialog(
                   MainActivity.this,R.style.getStartedModal
                 );
 
@@ -112,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if(emailSignUpValid()) {
-                            emailSignUp();
-                            getStartedBottomSheetDialog.dismiss();
+                            userNotExists();
                         }
                     }
                 });
@@ -127,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean emailSignUpValid() {
         boolean valid = true;
 
-        EditText nameEditText,passwordEditText,emailEditText;
         nameEditText = bottomSheetView.findViewById(R.id.nameEditText);
         passwordEditText = bottomSheetView.findViewById(R.id.passwordEditText);
         emailEditText = bottomSheetView.findViewById(R.id.emailEditText);
@@ -177,9 +177,41 @@ public class MainActivity extends AppCompatActivity {
         return valid;
     }
 
-    public void emailSignUp() {
+    public void userNotExists() {
+        String emailStr;
+        emailStr = emailEditText.getText().toString();
 
-        EditText nameEditText,passwordEditText,emailEditText;
+        ModelStringInput modelStringInput = ModelStringInput.builder().eq(emailStr).build();
+        ModelUserFilterInput modelUserFilterInput = ModelUserFilterInput.builder().email(modelStringInput).build();
+        awsAppSyncClient.query(ListUsersQuery.builder().filter(modelUserFilterInput).build())
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
+                .enqueue(new GraphQLCall.Callback<ListUsersQuery.Data>() {
+                    @Override
+                    public void onResponse(@Nonnull Response<ListUsersQuery.Data> response) {
+                        Log.i("Response",response.data().listUsers().items().toString());
+                        if(response.data().listUsers().items().isEmpty()) {
+                            Log.i("UserExist","This email is not registered");
+                            saveUser();
+                        }else {
+                            Log.i("UserExist","This email is already registered");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this, "This email is already registered", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@Nonnull ApolloException e) {
+                        Log.i("Error",e.toString());
+                    }
+                });
+    }
+
+    public void saveUser() {
+
         nameEditText = bottomSheetView.findViewById(R.id.nameEditText);
         passwordEditText = bottomSheetView.findViewById(R.id.passwordEditText);
         emailEditText = bottomSheetView.findViewById(R.id.emailEditText);
@@ -202,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Callback for user creation
+    //Callback for saving user
     private GraphQLCall.Callback<CreateUserMutation.Data> createUserCallback = new GraphQLCall.Callback<CreateUserMutation.Data>() {
         @Override
         public void onResponse(@Nonnull Response<CreateUserMutation.Data> response) {
