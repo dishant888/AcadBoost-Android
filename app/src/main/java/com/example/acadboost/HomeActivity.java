@@ -27,6 +27,9 @@ public class HomeActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     SessionManager session;
+    Fragment homeFragment = new HomeFragment();
+    Fragment videoFragment = new VideoFragment();
+    Fragment userFragment = new UserFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,19 +95,19 @@ public class HomeActivity extends AppCompatActivity {
 
             switch (item.getItemId()) {
                 case R.id.homeMenu :
-                    selectedFragment = new HomeFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,homeFragment).commit();
                     break;
 
                 case R.id.videoMenu :
-                    selectedFragment = new VideoFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,videoFragment).commit();
                     break;
 
                 case R.id.userMenu :
-                    selectedFragment = new UserFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,userFragment).commit();
                     break;
             }
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,selectedFragment).commit();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,selectedFragment).commit();
 
             return true;
         }
@@ -128,4 +131,5 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
