@@ -1,0 +1,73 @@
+# this is an auto generated file. This will be overwritten
+mutation CreateUser(
+  $input: CreateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  createUser(input: $input, condition: $condition) {
+    id
+    name
+    email
+    password
+  }
+}
+mutation UpdateUser(
+  $input: UpdateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  updateUser(input: $input, condition: $condition) {
+    id
+    name
+    email
+    password
+  }
+}
+mutation DeleteUser(
+  $input: DeleteUserInput!
+  $condition: ModelUserConditionInput
+) {
+  deleteUser(input: $input, condition: $condition) {
+    id
+    name
+    email
+    password
+  }
+}
+mutation CreateVideoDetailList(
+  $input: CreateVideoDetailListInput!
+  $condition: ModelVideoDetailListConditionInput
+) {
+  createVideoDetailList(input: $input, condition: $condition) {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}
+mutation UpdateVideoDetailList(
+  $input: UpdateVideoDetailListInput!
+  $condition: ModelVideoDetailListConditionInput
+) {
+  updateVideoDetailList(input: $input, condition: $condition) {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}
+mutation DeleteVideoDetailList(
+  $input: DeleteVideoDetailListInput!
+  $condition: ModelVideoDetailListConditionInput
+) {
+  deleteVideoDetailList(input: $input, condition: $condition) {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}

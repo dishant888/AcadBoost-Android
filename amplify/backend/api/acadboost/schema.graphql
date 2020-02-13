@@ -1,0 +1,15 @@
+type User @model {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+}
+
+type VideoDetailList @model {
+  id: ID!
+  video_name: String!
+  video_title: String!
+  video_description: String!
+  bucket_name: String!
+  object_url: String!
+}
