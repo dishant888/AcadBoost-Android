@@ -11,15 +11,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.amplify.generated.graphql.ListVideoDetailListsQuery;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
+import com.apollographql.apollo.GraphQLCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.annotation.Nonnull;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -31,10 +42,28 @@ public class HomeActivity extends AppCompatActivity {
     Fragment videoFragment = new VideoFragment();
     Fragment userFragment = new UserFragment();
 
+    private AWSAppSyncClient awsAppSyncClient;
+    private ArrayList<String> mTitle;
+    private ArrayList<String> mDescription;
+    private ArrayList<Integer> mImage;
+    private ArrayList<String> mObjectUrl;
+    Bundle videoBundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mTitle = new ArrayList<>();
+        mDescription = new ArrayList<>();
+        mImage = new ArrayList<>();
+        mObjectUrl = new ArrayList<>();
+
+        //AWS App Sync Cilent
+        awsAppSyncClient = AWSAppSyncClient.builder()
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .build();
 
         //NavBarDrawer Toggler
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -62,6 +91,9 @@ public class HomeActivity extends AppCompatActivity {
         TextView navBarHeaderUserEmail = navigationHeaderView.findViewById(R.id.navBarHeaderUserEmail);
         navBarHeaderUserName.setText(sessionData.get(SessionManager.NAME));
         navBarHeaderUserEmail.setText(sessionData.get(SessionManager.EMAIL));
+
+        //VideoList
+        fetchVideoList();
 
     }
 
@@ -91,7 +123,6 @@ public class HomeActivity extends AppCompatActivity {
     private BottomNavigationView.OnNavigationItemSelectedListener navListner = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectedFragment = null;
 
             switch (item.getItemId()) {
                 case R.id.homeMenu :
@@ -106,9 +137,6 @@ public class HomeActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,userFragment).commit();
                     break;
             }
-
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,selectedFragment).commit();
-
             return true;
         }
     };
@@ -132,4 +160,42 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void fetchVideoList() {
+
+        ListVideoDetailListsQuery query = ListVideoDetailListsQuery.builder().build();
+        awsAppSyncClient.query(query)
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
+                .enqueue(queryCallback);
+    }
+
+    private GraphQLCall.Callback<ListVideoDetailListsQuery.Data> queryCallback = new GraphQLCall.Callback<ListVideoDetailListsQuery.Data>() {
+        @Override
+        public void onResponse(@Nonnull Response<ListVideoDetailListsQuery.Data> response) {
+                runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(!response.data().listVideoDetailLists().items().isEmpty()){
+                        for(ListVideoDetailListsQuery.Item row : response.data().listVideoDetailLists().items()) {
+                            mTitle.add(row.video_title());
+                            mDescription.add(row.video_description());
+                            mObjectUrl.add(row.object_url());
+                            mImage.add(R.color.colorTheme);
+                        }
+                        videoBundle = new Bundle();
+                        videoBundle.putStringArrayList("titleArrayList",mTitle);
+                        videoBundle.putStringArrayList("descriptionArrayList",mDescription);
+                        videoBundle.putIntegerArrayList("imageArrayList",mImage);
+                        videoBundle.putStringArrayList("objectUrlArrayList",mObjectUrl);
+                        videoFragment.setArguments(videoBundle);
+                    }
+                }
+            });
+
+        }
+
+        @Override
+        public void onFailure(@Nonnull ApolloException e) {
+
+        }
+    };
 }

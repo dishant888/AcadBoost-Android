@@ -1,9 +1,8 @@
 package com.example.acadboost;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,51 +10,36 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.amazonaws.amplify.generated.graphql.ListVideoDetailListsQuery;
-import com.amazonaws.mobile.config.AWSConfiguration;
-import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
-import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
-import com.apollographql.apollo.GraphQLCall;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.ArrayList;
 
-import javax.annotation.Nonnull;
 
 public class VideoFragment extends Fragment {
 
-    private AWSAppSyncClient awsAppSyncClient;
-    private ArrayList<String> mTitle;
-    private ArrayList<String> mDescription;
-    private ArrayList<Integer> mImage;
     private ListView listView;
-    private videoListAdapter adapter;
+    private VideoFragment.videoListAdapter adapter;
+    private ArrayList<String> mTitleList;
+    private ArrayList<String> mDescriptionList;
+    private ArrayList<Integer> mImageList;
+    private ArrayList<String> mObjectUrl;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTitleList = new ArrayList<>();
+        mDescriptionList = new ArrayList<>();
+        mImageList = new ArrayList<>();
+        mObjectUrl = new ArrayList<>();
 
-        mTitle = new ArrayList<>();
-        mDescription = new ArrayList<>();
-        mImage = new ArrayList<>();
-
-        awsAppSyncClient = AWSAppSyncClient.builder()
-                .context(getContext())
-                .awsConfiguration(new AWSConfiguration(getContext()))
-                .build();
-
-        ListVideoDetailListsQuery query = ListVideoDetailListsQuery.builder().build();
-        awsAppSyncClient.query(query)
-                .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
-                .enqueue(queryCallback);
+        savedInstanceState = this.getArguments();
+        mTitleList = savedInstanceState.getStringArrayList("titleArrayList");
+        mDescriptionList = savedInstanceState.getStringArrayList("descriptionArrayList");
+        mImageList = savedInstanceState.getIntegerArrayList("imageArrayList");
+        mObjectUrl = savedInstanceState.getStringArrayList("objectUrlArrayList");
     }
 
     @Nullable
@@ -64,38 +48,15 @@ public class VideoFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.video_fragment,container,false);
         //Set Action Bar Title
-        getActivity().setTitle("Vidoes");
+        getActivity().setTitle("Videos");
 
         listView = view.findViewById(R.id.videoList);
-        adapter = new videoListAdapter(getContext(),mTitle,mDescription,mImage);
+        adapter = new videoListAdapter(getContext(),mTitleList,mDescriptionList,mImageList,mObjectUrl);
+        listView.setAdapter(adapter);
 
         return view;
     }
 
-    private GraphQLCall.Callback<ListVideoDetailListsQuery.Data> queryCallback = new GraphQLCall.Callback<ListVideoDetailListsQuery.Data>() {
-        @Override
-        public void onResponse(@Nonnull Response<ListVideoDetailListsQuery.Data> response) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(!response.data().listVideoDetailLists().items().isEmpty()){
-                        for(ListVideoDetailListsQuery.Item row : response.data().listVideoDetailLists().items()) {
-                            mTitle.add(row.video_title());
-                            mDescription.add(row.video_description());
-                            mImage.add(R.color.colorTheme);
-                        }
-                        listView.setAdapter(adapter);
-                    }
-                }
-            });
-
-        }
-
-        @Override
-        public void onFailure(@Nonnull ApolloException e) {
-
-        }
-    };
 
     class videoListAdapter extends ArrayAdapter<String> {
 
@@ -103,13 +64,15 @@ public class VideoFragment extends Fragment {
         ArrayList<String> rTitle;
         ArrayList<String> rDescription;
         ArrayList<Integer> rImage;
+        ArrayList<String> rObjectUrl;
 
-        videoListAdapter(Context c,ArrayList<String> title, ArrayList<String> description, ArrayList<Integer> image) {
+        videoListAdapter(Context c,ArrayList<String> title, ArrayList<String> description, ArrayList<Integer> image,ArrayList<String> objectUrl) {
             super(c,R.layout.video_list_row,R.id.videoListTitle,title);
             this.context = c;
             this.rTitle = title;
             this.rDescription = description;
             this.rImage = image;
+            this.rObjectUrl = objectUrl;
         }
 
         @NonNull
@@ -126,6 +89,14 @@ public class VideoFragment extends Fragment {
             titleTextView.setText(rTitle.get(position));
             descriptionTextView.setText(rDescription.get(position));
 
+            row.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent videoPlayer = new Intent(getContext(),VideoPlayerActivity.class);
+                    videoPlayer.putExtra("objectUrl",rObjectUrl.get(position));
+                    startActivity(videoPlayer);
+                }
+            });
 
             return row;
         }
