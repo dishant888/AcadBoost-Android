@@ -7,11 +7,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,12 +28,13 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import org.w3c.dom.Text;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.annotation.Nonnull;
+
 
 
 public class HomeActivity extends AppCompatActivity {

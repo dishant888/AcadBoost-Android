@@ -15,10 +15,12 @@ public class VideoPlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
+        Intent intent = getIntent();
+        getSupportActionBar().setTitle(intent.getStringExtra("actionBarTitle"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
-        Intent intent = getIntent();
         Uri uri = Uri.parse(intent.getStringExtra("objectUrl").toString());
         videoView.setVideoURI(uri);
         videoView.setMediaController(mediaController);

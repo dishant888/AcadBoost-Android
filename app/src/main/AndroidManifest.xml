@@ -16,8 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".VideoPlayerActivity"></activity>
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".VideoPlayerActivity" android:parentActivityName=".HomeActivity"></activity>
+        <activity android:name=".HomeActivity" android:launchMode="singleTop"/>
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />

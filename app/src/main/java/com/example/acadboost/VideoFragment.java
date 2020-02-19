@@ -2,6 +2,7 @@ package com.example.acadboost;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,6 +95,7 @@ public class VideoFragment extends Fragment {
                 public void onClick(View v) {
                     Intent videoPlayer = new Intent(getContext(),VideoPlayerActivity.class);
                     videoPlayer.putExtra("objectUrl",rObjectUrl.get(position));
+                    videoPlayer.putExtra("actionBarTitle",rTitle.get(position));
                     startActivity(videoPlayer);
                 }
             });
