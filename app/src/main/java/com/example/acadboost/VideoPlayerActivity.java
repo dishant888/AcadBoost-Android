@@ -23,6 +23,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         MediaController mediaController = new MediaController(this);
         Uri uri = Uri.parse(intent.getStringExtra("objectUrl").toString());
         videoView.setVideoURI(uri);
+        mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
         videoView.start();
     }
