@@ -1,0 +1,223 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+}
+
+type VideoDetailList {
+  id: ID!
+  video_name: String!
+  video_title: String!
+  video_description: String!
+  bucket_name: String!
+  object_url: String!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelUserFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  email: ModelStringInput
+  password: ModelStringInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+type Query {
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getVideoDetailList(id: ID!): VideoDetailList
+  listVideoDetailLists(filter: ModelVideoDetailListFilterInput, limit: Int, nextToken: String): ModelVideoDetailListConnection
+}
+
+input CreateUserInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  email: String
+  password: String
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User
+  createVideoDetailList(input: CreateVideoDetailListInput!, condition: ModelVideoDetailListConditionInput): VideoDetailList
+  updateVideoDetailList(input: UpdateVideoDetailListInput!, condition: ModelVideoDetailListConditionInput): VideoDetailList
+  deleteVideoDetailList(input: DeleteVideoDetailListInput!, condition: ModelVideoDetailListConditionInput): VideoDetailList
+}
+
+input ModelUserConditionInput {
+  name: ModelStringInput
+  email: ModelStringInput
+  password: ModelStringInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Subscription {
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateVideoDetailList: VideoDetailList @aws_subscribe(mutations: ["createVideoDetailList"])
+  onUpdateVideoDetailList: VideoDetailList @aws_subscribe(mutations: ["updateVideoDetailList"])
+  onDeleteVideoDetailList: VideoDetailList @aws_subscribe(mutations: ["deleteVideoDetailList"])
+}
+
+type ModelVideoDetailListConnection {
+  items: [VideoDetailList]
+  nextToken: String
+}
+
+input ModelVideoDetailListFilterInput {
+  id: ModelIDInput
+  video_name: ModelStringInput
+  video_title: ModelStringInput
+  video_description: ModelStringInput
+  bucket_name: ModelStringInput
+  object_url: ModelStringInput
+  and: [ModelVideoDetailListFilterInput]
+  or: [ModelVideoDetailListFilterInput]
+  not: ModelVideoDetailListFilterInput
+}
+
+input CreateVideoDetailListInput {
+  id: ID
+  video_name: String!
+  video_title: String!
+  video_description: String!
+  bucket_name: String!
+  object_url: String!
+}
+
+input UpdateVideoDetailListInput {
+  id: ID!
+  video_name: String
+  video_title: String
+  video_description: String
+  bucket_name: String
+  object_url: String
+}
+
+input DeleteVideoDetailListInput {
+  id: ID
+}
+
+input ModelVideoDetailListConditionInput {
+  video_name: ModelStringInput
+  video_title: ModelStringInput
+  video_description: ModelStringInput
+  bucket_name: ModelStringInput
+  object_url: ModelStringInput
+  and: [ModelVideoDetailListConditionInput]
+  or: [ModelVideoDetailListConditionInput]
+  not: ModelVideoDetailListConditionInput
+}
