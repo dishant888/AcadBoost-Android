@@ -17,6 +17,8 @@ public class SessionManager {
     public static final String NAME = "Name";
     public static final String EMAIL = "Email";
     public static final String ID = "Id";
+    public static final String SIGNUP_TYPE = "signUpType";
+    public static final String PROFILE_PICTURE_URL = "profilePictureURL";
 
     public SessionManager(Context context) {
         this.context = context;
@@ -24,11 +26,13 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void startSession(String name,String email,String id) {
+    public void startSession(String name,String email,String id,String signUpType,String profilePictureURL) {
         editor.putBoolean(IS_USER_LOGGEDIN,true);
         editor.putString(NAME,name);
         editor.putString(EMAIL,email);
         editor.putString(ID,id);
+        editor.putString(SIGNUP_TYPE,signUpType);
+        editor.putString(PROFILE_PICTURE_URL,profilePictureURL);
         editor.commit();
     }
 
@@ -53,6 +57,8 @@ public class SessionManager {
         user.put(NAME,pref.getString(NAME,null));
         user.put(EMAIL,pref.getString(EMAIL,null));
         user.put(ID,pref.getString(ID,null));
+        user.put(SIGNUP_TYPE,pref.getString(SIGNUP_TYPE,null));
+        user.put(PROFILE_PICTURE_URL,pref.getString(PROFILE_PICTURE_URL,null));
 
         return user;
     }

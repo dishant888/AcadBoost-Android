@@ -8,6 +8,8 @@ mutation CreateUser(
     name
     email
     password
+    sign_up_type
+    profile_picture_url
   }
 }
 mutation UpdateUser(
@@ -19,6 +21,8 @@ mutation UpdateUser(
     name
     email
     password
+    sign_up_type
+    profile_picture_url
   }
 }
 mutation DeleteUser(
@@ -30,6 +34,8 @@ mutation DeleteUser(
     name
     email
     password
+    sign_up_type
+    profile_picture_url
   }
 }
 mutation CreateVideoDetailList(

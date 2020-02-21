@@ -5,6 +5,8 @@ query GetUser($id: ID!) {
     name
     email
     password
+    sign_up_type
+    profile_picture_url
   }
 }
 query ListUsers(
@@ -18,6 +20,8 @@ query ListUsers(
       name
       email
       password
+      sign_up_type
+      profile_picture_url
     }
     nextToken
   }

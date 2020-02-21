@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
+import com.amazonaws.amplify.generated.graphql.GetUserQuery;
 import com.amazonaws.amplify.generated.graphql.ListUsersQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
@@ -26,6 +27,7 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -35,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     SessionManager session;
     GoogleSignInClient mGoogleSignInClient;
     int RC_GOOGLE_SIGN_IN = 0;
+    private static String DEFAULT_PROFLE_IMAGE = "https://acadboost-courses-videos.s3.ap-south-1.amazonaws.com/ProfilePicture/Default/defaultProfilePicture.png";
 
     @Override
     protected void onStart() {
@@ -65,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
             goToHome();
         }
 
+        if(mGoogleSignInClient != null) {
+            mGoogleSignInClient.signOut();
+        }
     }
 
     @Override
@@ -142,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
                 googleLoginImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(mGoogleSignInClient != null) {
+                            mGoogleSignInClient.signOut();
+                        }
                         Intent googleSigninIntent = mGoogleSignInClient.getSignInIntent();
                         startActivityForResult(googleSigninIntent, RC_GOOGLE_SIGN_IN);
                     }
@@ -167,22 +177,103 @@ public class MainActivity extends AppCompatActivity {
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> task) {
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            String name,email,id;
-            Uri profilePictureURL;
+            // Save in DB
+            ModelStringInput emailStringInput = ModelStringInput.builder().eq(account.getEmail()).build();
+            ModelStringInput signUpTypeInput = ModelStringInput.builder().eq("Google").build();
+            ModelUserFilterInput filter = ModelUserFilterInput.builder().email(emailStringInput).sign_up_type(signUpTypeInput).build();
+            ListUsersQuery query = ListUsersQuery.builder().filter(filter).build();
 
-            name = account.getDisplayName();
-            email = account.getEmail();
-            id = account.getIdToken();
-            profilePictureURL = account.getPhotoUrl();
-            session.startSession(name,email,id);
-            goToHome();
-            // Signed in successfully, show authenticated UI.
+            checkGoogleAccountExist(query,account);
+
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.i("GoogleSignInError", "signInResult:failed code=" + e.getStatusCode());
         }
     }
+
+    public void checkGoogleAccountExist(ListUsersQuery query,GoogleSignInAccount account) {
+
+        awsAppSyncClient.query(query)
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
+                .enqueue(new GraphQLCall.Callback<ListUsersQuery.Data>() {
+                    @Override
+                    public void onResponse(@Nonnull Response<ListUsersQuery.Data> response) {
+
+                        if(!response.data().listUsers().items().isEmpty()) {
+//                            Log.i("Call",response.data().listUsers().items().toString());
+                            //User is already Saved
+                            //Start new Session
+                            SessionManager session = new SessionManager(getApplicationContext());
+
+                            String imageUrl,name,email,id,signUpType;
+
+                            if(account.getPhotoUrl() == null) {
+                                imageUrl = DEFAULT_PROFLE_IMAGE;
+                            }else {
+                                imageUrl = account.getPhotoUrl().toString();
+                            }
+                            name = account.getDisplayName();
+                            email = account.getEmail();
+                            id = account.getId();
+                            signUpType = "Google";
+                            session.startSession(name,email,id,signUpType,imageUrl);
+                            goToHome();
+
+                        }else {
+                            //Save New User
+//                            Log.i("Call","Empty");
+                            String imageUrl;
+
+                            if(account.getPhotoUrl() == null) {
+                                imageUrl = DEFAULT_PROFLE_IMAGE;
+                            }else {
+                                imageUrl = account.getPhotoUrl().toString();
+                            }
+
+                            CreateUserInput input = CreateUserInput.builder()
+                                    .id(account.getId()).email(account.getEmail()).name(account.getDisplayName())
+                                    .sign_up_type("Google").profile_picture_url(imageUrl).build();
+                            CreateUserMutation query = CreateUserMutation.builder().input(input).build();
+
+                            awsAppSyncClient.mutate(query).enqueue(new GraphQLCall.Callback<CreateUserMutation.Data>() {
+                                @Override
+                                public void onResponse(@Nonnull Response<CreateUserMutation.Data> response) {
+
+                                    //Start Session
+                                    SessionManager session = new SessionManager(getApplicationContext());
+
+                                    String imageUrl,name,email,id,signUpType;
+
+                                    if(account.getPhotoUrl() == null) {
+                                        imageUrl = DEFAULT_PROFLE_IMAGE;
+                                    }else {
+                                        imageUrl = account.getPhotoUrl().toString();
+                                    }
+                                    name = account.getDisplayName();
+                                    email = account.getEmail();
+                                    id = account.getId();
+                                    signUpType = "Google";
+                                    session.startSession(name,email,id,signUpType,imageUrl);
+                                    goToHome();
+                                }
+
+                                @Override
+                                public void onFailure(@Nonnull ApolloException e) {
+
+                                }
+                            });
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(@Nonnull ApolloException e) {
+
+                    }
+                });
+    }
+
 
     public boolean emailSignUpValid() {
         boolean valid = true;
@@ -240,8 +331,10 @@ public class MainActivity extends AppCompatActivity {
         String emailStr;
         emailStr = emailEditText.getText().toString();
 
-        ModelStringInput modelStringInput = ModelStringInput.builder().eq(emailStr).build();
-        ModelUserFilterInput modelUserFilterInput = ModelUserFilterInput.builder().email(modelStringInput).build();
+        ModelStringInput emailModelInput = ModelStringInput.builder().eq(emailStr).build();
+        ModelStringInput signUpInput = ModelStringInput.builder().eq("Email/Password").build();
+        ModelUserFilterInput modelUserFilterInput = ModelUserFilterInput.builder().email(emailModelInput).sign_up_type(signUpInput).build();
+
         awsAppSyncClient.query(ListUsersQuery.builder().filter(modelUserFilterInput).build())
                 .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
                 .enqueue(new GraphQLCall.Callback<ListUsersQuery.Data>() {
@@ -284,9 +377,11 @@ public class MainActivity extends AppCompatActivity {
         //Todo:- save user in dynamoDB table and send confirmation email (user can login only after email verification) after sending email redirect to login
 
         //Save User
-        uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
         CreateUserInput user = CreateUserInput.builder()
                 .id(uuid).name(nameStr).email(emailStr).password(passwordStr)
+                .profile_picture_url(DEFAULT_PROFLE_IMAGE)
+                .sign_up_type("Email/Password")
                 .build();
 
         awsAppSyncClient.mutate(CreateUserMutation.builder().input(user).build()).enqueue(createUserCallback);

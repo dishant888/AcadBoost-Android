@@ -6,10 +6,10 @@
     },
     "AppSync": {
         "Default": {
-            "ApiUrl": "https://ye44btckpze5jn3k6kdcajtlia.appsync-api.ap-south-1.amazonaws.com/graphql",
+            "ApiUrl": "https://copf4wkunfdsnb5io3uhwhkmse.appsync-api.ap-south-1.amazonaws.com/graphql",
             "Region": "ap-south-1",
             "AuthMode": "API_KEY",
-            "ApiKey": "da2-fi45va4dmfdlffw7idxy6hwy5u",
+            "ApiKey": "da2-ull4zzl6pnbdpfi3hcwrdeywfm",
             "ClientDatabasePrefix": "acadboost_API_KEY"
         }
     }

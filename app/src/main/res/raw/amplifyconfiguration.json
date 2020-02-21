@@ -6,10 +6,10 @@
             "awsAPIPlugin": {
                 "acadboost": {
                     "endpointType": "GraphQL",
-                    "endpoint": "https://ye44btckpze5jn3k6kdcajtlia.appsync-api.ap-south-1.amazonaws.com/graphql",
+                    "endpoint": "https://copf4wkunfdsnb5io3uhwhkmse.appsync-api.ap-south-1.amazonaws.com/graphql",
                     "region": "ap-south-1",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-fi45va4dmfdlffw7idxy6hwy5u"
+                    "apiKey": "da2-ull4zzl6pnbdpfi3hcwrdeywfm"
                 }
             }
         }

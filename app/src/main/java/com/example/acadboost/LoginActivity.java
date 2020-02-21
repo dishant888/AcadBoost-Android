@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -72,8 +73,10 @@ public class LoginActivity extends AppCompatActivity {
             ModelStringInput passwordStringInput = ModelStringInput.builder().eq(passwordStr).build();
             ModelUserFilterInput emailUserFilterInput = ModelUserFilterInput.builder().email(emailStringInput).build();
             ModelUserFilterInput passwordUserFilterInput = ModelUserFilterInput.builder().password(passwordStringInput).build();
+            ModelStringInput signUpType = ModelStringInput.builder().eq("Email/Password").build();
+            ModelUserFilterInput signUpTypeFilter = ModelUserFilterInput.builder().sign_up_type(signUpType).build();
 
-            ListUsersQuery listUsersQuery = ListUsersQuery.builder().filter(emailUserFilterInput).filter(passwordUserFilterInput).build();
+            ListUsersQuery listUsersQuery = ListUsersQuery.builder().filter(emailUserFilterInput).filter(passwordUserFilterInput).filter(signUpTypeFilter).build();
             awsAppSyncClient.query(listUsersQuery)
                     .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
                     .enqueue(new GraphQLCall.Callback<ListUsersQuery.Data>() {
@@ -87,11 +90,14 @@ public class LoginActivity extends AppCompatActivity {
                                 session = new SessionManager(getApplicationContext());
 
                                 for(ListUsersQuery.Item data : response.data().listUsers().items()) {
-                                    String name,email,id;
-                                    name = data.name().toString();
-                                    email = data.email().toString();
-                                    id = data.id().toString();
-                                    session.startSession(name,email,id);
+                                    String name,email,id,signUpType;
+                                    String profilePictureURL;
+                                    name = data.name();
+                                    email = data.email();
+                                    id = data.id();
+                                    signUpType = data.sign_up_type();
+                                    profilePictureURL = data.profile_picture_url();
+                                    session.startSession(name,email,id,signUpType,profilePictureURL);
                                 }
 
                                 Intent login = new Intent(getApplicationContext(),HomeActivity.class);

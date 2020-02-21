@@ -5,6 +5,8 @@ subscription OnCreateUser {
     name
     email
     password
+    sign_up_type
+    profile_picture_url
   }
 }
 subscription OnUpdateUser {
@@ -13,6 +15,8 @@ subscription OnUpdateUser {
     name
     email
     password
+    sign_up_type
+    profile_picture_url
   }
 }
 subscription OnDeleteUser {
@@ -21,6 +25,8 @@ subscription OnDeleteUser {
     name
     email
     password
+    sign_up_type
+    profile_picture_url
   }
 }
 subscription OnCreateVideoDetailList {
