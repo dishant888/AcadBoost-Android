@@ -1,9 +1,11 @@
 package com.example.acadboost;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -17,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
-import com.amazonaws.amplify.generated.graphql.GetUserQuery;
 import com.amazonaws.amplify.generated.graphql.ListUsersQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
@@ -25,7 +26,12 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.fetcher.ResponseFetcher;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.Toast;
 
@@ -48,18 +54,17 @@ public class MainActivity extends AppCompatActivity {
     String uuid;
     EditText nameEditText,passwordEditText,emailEditText;
     SessionManager session;
+    GoogleSignInClient mGoogleSignInClient;
+    int RC_GOOGLE_SIGN_IN = 0;
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        //Todo :- if user is already logged in redirect to Home
         if(session.isUserLoggedIn()) {
-            Intent login = new Intent(getApplicationContext(),HomeActivity.class);
-            login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(login);
+            goToHome();
         }
+
     }
 
     @Override
@@ -93,6 +98,15 @@ public class MainActivity extends AppCompatActivity {
         textView3.animate().translationY(0).setDuration(800).setStartDelay(700);
         loginTextView.animate().translationY(0).setDuration(800).setStartDelay(700);
 
+        //Google SignIn Options
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        //Google SignIn Client
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         //Bottom Sheet Show
 
         getStartedbutton.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 facebookLoginImageView.setImageResource(R.drawable.facebook);
                 linkedinLoginImageView.setImageResource(R.drawable.linkedin);
 
+                //SignUp with email and password
                 bottomSheetView.findViewById(R.id.signUpButton).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -123,10 +138,50 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                //SignIn with Google
+                googleLoginImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent googleSigninIntent = mGoogleSignInClient.getSignInIntent();
+                        startActivityForResult(googleSigninIntent, RC_GOOGLE_SIGN_IN);
+                    }
+                });
+
                 getStartedBottomSheetDialog.setContentView(bottomSheetView);
                 getStartedBottomSheetDialog.show();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_GOOGLE_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleGoogleSignInResult(task);
+        }
+    }
+
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> task) {
+        try {
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            String name,email,id;
+            Uri profilePictureURL;
+
+            name = account.getDisplayName();
+            email = account.getEmail();
+            id = account.getIdToken();
+            profilePictureURL = account.getPhotoUrl();
+            session.startSession(name,email,id);
+            goToHome();
+            // Signed in successfully, show authenticated UI.
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.i("GoogleSignInError", "signInResult:failed code=" + e.getStatusCode());
+        }
     }
 
     public boolean emailSignUpValid() {
@@ -270,6 +325,14 @@ public class MainActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
+    }
+
+    public void goToHome() {
+        Intent login = new Intent(getApplicationContext(),HomeActivity.class);
+        login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(login);
         finish();
     }
 

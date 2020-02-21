@@ -24,6 +24,7 @@ android {
 }
 
 apply plugin: 'com.amazonaws.appsync'
+apply plugin: 'com.android.application'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -46,6 +47,6 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation('com.amazonaws:aws-android-sdk-mobile-client:2.15.+@aar') { transitive = true }
 
-    //MongoDb
-    //implementation 'org.mongodb:stitch-android-sdk:4.5.0'
+    //Google SignIn
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 }

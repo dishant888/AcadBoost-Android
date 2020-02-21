@@ -25,6 +25,9 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -52,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     private ArrayList<Integer> mImage;
     private ArrayList<String> mObjectUrl;
     Bundle videoBundle;
+    GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,14 @@ public class HomeActivity extends AppCompatActivity {
                 .context(getApplicationContext())
                 .awsConfiguration(new AWSConfiguration(getApplicationContext()))
                 .build();
+        //Google SignIn Options
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        //Google SignIn Client
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         //NavBarDrawer Toggler
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -148,6 +160,11 @@ public class HomeActivity extends AppCompatActivity {
     public void logout() {
 
         session.endSession();
+
+        if(mGoogleSignInClient != null) {
+            mGoogleSignInClient.signOut();
+        }
+
         Intent login = new Intent(getApplicationContext(),LoginActivity.class);
         login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -183,7 +200,7 @@ public class HomeActivity extends AppCompatActivity {
                             mTitle.add(row.video_title());
                             mDescription.add(row.video_description());
                             mObjectUrl.add(row.object_url());
-                            mImage.add(R.color.colorTheme);
+                            mImage.add(R.color.colorPrimaryDark);
                         }
                         videoBundle = new Bundle();
                         videoBundle.putStringArrayList("titleArrayList",mTitle);
