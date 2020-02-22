@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -27,7 +26,16 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,8 +45,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
 
@@ -59,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
     SessionManager session;
     GoogleSignInClient mGoogleSignInClient;
     int RC_GOOGLE_SIGN_IN = 0;
-    private static String DEFAULT_PROFLE_IMAGE = "https://acadboost-courses-videos.s3.ap-south-1.amazonaws.com/ProfilePicture/Default/defaultProfilePicture.png";
+    CallbackManager callbackManager;
+    private static String DEFAULT_PROFILE_IMAGE = "https://acadboost-courses-videos.s3.ap-south-1.amazonaws.com/ProfilePicture/Default/defaultProfilePicture.png";
 
     @Override
     protected void onStart() {
@@ -114,8 +129,38 @@ public class MainActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        //Bottom Sheet Show
+        //FaceBook SignIn
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.i("FB",loginResult.getAccessToken().getUserId());
+                String userId = loginResult.getAccessToken().getUserId();
 
+                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                     @Override
+                     public void onCompleted(JSONObject object, GraphResponse response) {
+                         saveFbUser(object);
+                     }
+                 });
+                 Bundle bundle = new Bundle();
+                 bundle.putString("fields","first_name,last_name,email,id");
+                 request.setParameters(bundle);
+                 request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+        //Bottom Sheet Show
         getStartedbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +202,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                //SignIn with FaceBook
+                facebookLoginImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
+                        if(loggedIn) {
+                            LoginManager.getInstance().logOut();
+                        }
+                        LoginManager.getInstance().logInWithReadPermissions(MainActivity.this,Arrays.asList("user_photos","email","public_profile"));
+                    }
+                });
+
                 getStartedBottomSheetDialog.setContentView(bottomSheetView);
                 getStartedBottomSheetDialog.show();
             }
@@ -166,12 +223,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //google SignIn
         if (requestCode == RC_GOOGLE_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleGoogleSignInResult(task);
         }
+        //FaceBook SignIn
+        callbackManager.onActivityResult(requestCode,resultCode,data);
     }
 
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> task) {
@@ -192,6 +252,97 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void saveFbUser(JSONObject object) {
+        String email="";
+        try {
+            email = object.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Check if user already exist
+        ModelStringInput emailStringInput = ModelStringInput.builder().eq(email).build();
+        ModelStringInput signUpTypeInput = ModelStringInput.builder().eq("Facebook").build();
+        ModelUserFilterInput filter = ModelUserFilterInput.builder().email(emailStringInput).sign_up_type(signUpTypeInput).build();
+        ListUsersQuery query = ListUsersQuery.builder().filter(filter).build();
+
+        awsAppSyncClient.query(query)
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
+                .enqueue(new GraphQLCall.Callback<ListUsersQuery.Data>() {
+                    @Override
+                    public void onResponse(@Nonnull Response<ListUsersQuery.Data> response) {
+
+                        String f_name = "",l_name = "",email = "",id = "",full_name = "",imageUrl = "";
+                        try {
+                            f_name = object.getString("first_name");
+                            l_name = object.getString("last_name");
+                            email = object.getString("email");
+                            id = object.getString("id");
+                            full_name = f_name + " " + l_name;
+                            imageUrl = "https://graph.facebook.com/"+id+"/picture?return_ssl_resources=1";
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if(!response.data().listUsers().items().isEmpty()) {
+//                            Log.i("Call",response.data().listUsers().items().toString());
+                            //User is already Saved
+                            //Start new Session
+                            String sessionId = "";
+                            for(ListUsersQuery.Item row: response.data().listUsers().items()) {
+                                sessionId = row.id();
+                            }
+
+                            SessionManager session = new SessionManager(getApplicationContext());
+                            session.startSession(full_name,email,sessionId,"Facebook",imageUrl);
+                            goToHome();
+
+                        } else{
+
+                            String uID = UUID.randomUUID().toString();
+                            CreateUserInput input = CreateUserInput.builder()
+                                    .id(uID).email(email).name(full_name)
+                                    .sign_up_type("Facebook").profile_picture_url(imageUrl).build();
+                            CreateUserMutation query = CreateUserMutation.builder().input(input).build();
+
+                            awsAppSyncClient.mutate(query).enqueue(new GraphQLCall.Callback<CreateUserMutation.Data>() {
+                                @Override
+                                public void onResponse(@Nonnull Response<CreateUserMutation.Data> response) {
+                                    //Log.i("FB",response.data().createUser().email());
+
+                                    String f_name = "",l_name = "",email = "",id = "",full_name = "",imageUrl = "";
+                                    String sessionId = response.data().createUser().id();
+                                    try {
+                                        f_name = object.getString("first_name");
+                                        l_name = object.getString("last_name");
+                                        email = object.getString("email");
+                                        id = object.getString("id");
+                                        full_name = f_name + " " + l_name;
+                                        imageUrl = "https://graph.facebook.com/"+id+"/picture?return_ssl_resources=1";
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    SessionManager session = new SessionManager(getApplicationContext());
+                                    session.startSession(full_name,email,sessionId,"Facebook",imageUrl);
+                                    goToHome();
+                                }
+
+                                @Override
+                                public void onFailure(@Nonnull ApolloException e) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@Nonnull ApolloException e) {
+
+                    }
+                });
+
+    }
+
     public void checkGoogleAccountExist(ListUsersQuery query,GoogleSignInAccount account) {
 
         awsAppSyncClient.query(query)
@@ -206,16 +357,19 @@ public class MainActivity extends AppCompatActivity {
                             //Start new Session
                             SessionManager session = new SessionManager(getApplicationContext());
 
-                            String imageUrl,name,email,id,signUpType;
+                            String imageUrl,name,email,id="",signUpType;
+
+                            for(ListUsersQuery.Item row : response.data().listUsers().items()) {
+                                id = row.id();
+                            }
 
                             if(account.getPhotoUrl() == null) {
-                                imageUrl = DEFAULT_PROFLE_IMAGE;
+                                imageUrl = DEFAULT_PROFILE_IMAGE;
                             }else {
                                 imageUrl = account.getPhotoUrl().toString();
                             }
                             name = account.getDisplayName();
                             email = account.getEmail();
-                            id = account.getId();
                             signUpType = "Google";
                             session.startSession(name,email,id,signUpType,imageUrl);
                             goToHome();
@@ -226,13 +380,14 @@ public class MainActivity extends AppCompatActivity {
                             String imageUrl;
 
                             if(account.getPhotoUrl() == null) {
-                                imageUrl = DEFAULT_PROFLE_IMAGE;
+                                imageUrl = DEFAULT_PROFILE_IMAGE;
                             }else {
                                 imageUrl = account.getPhotoUrl().toString();
                             }
 
+                            String id = UUID.randomUUID().toString();
                             CreateUserInput input = CreateUserInput.builder()
-                                    .id(account.getId()).email(account.getEmail()).name(account.getDisplayName())
+                                    .id(id).email(account.getEmail()).name(account.getDisplayName())
                                     .sign_up_type("Google").profile_picture_url(imageUrl).build();
                             CreateUserMutation query = CreateUserMutation.builder().input(input).build();
 
@@ -246,13 +401,13 @@ public class MainActivity extends AppCompatActivity {
                                     String imageUrl,name,email,id,signUpType;
 
                                     if(account.getPhotoUrl() == null) {
-                                        imageUrl = DEFAULT_PROFLE_IMAGE;
+                                        imageUrl = DEFAULT_PROFILE_IMAGE;
                                     }else {
                                         imageUrl = account.getPhotoUrl().toString();
                                     }
                                     name = account.getDisplayName();
                                     email = account.getEmail();
-                                    id = account.getId();
+                                    id = response.data().createUser().id();
                                     signUpType = "Google";
                                     session.startSession(name,email,id,signUpType,imageUrl);
                                     goToHome();
@@ -273,7 +428,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
     public boolean emailSignUpValid() {
         boolean valid = true;
@@ -380,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
         String uuid = UUID.randomUUID().toString();
         CreateUserInput user = CreateUserInput.builder()
                 .id(uuid).name(nameStr).email(emailStr).password(passwordStr)
-                .profile_picture_url(DEFAULT_PROFLE_IMAGE)
+                .profile_picture_url(DEFAULT_PROFILE_IMAGE)
                 .sign_up_type("Email/Password")
                 .build();
 

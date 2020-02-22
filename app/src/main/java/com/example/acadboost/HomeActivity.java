@@ -26,6 +26,8 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -169,6 +171,11 @@ public class HomeActivity extends AppCompatActivity {
 
         if(mGoogleSignInClient != null) {
             mGoogleSignInClient.signOut();
+        }
+
+        boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
+        if(loggedIn) {
+            LoginManager.getInstance().logOut();
         }
 
         Intent login = new Intent(getApplicationContext(),LoginActivity.class);

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">AcadBoost</string>
-    <!--    <string name="my_app_id">acadboost-rauqg</string>-->
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="facebook_app_id">1109145612762335</string>
+    <string name="fb_login_protocol_scheme">fb1109145612762335</string>
+
 </resources>
