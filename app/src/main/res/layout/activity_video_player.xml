@@ -8,11 +8,27 @@
     android:gravity="center"
     tools:context=".VideoPlayerActivity">
 
-    <VideoView
-        android:id="@+id/videoView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true"
-        android:gravity="center"/>
+        android:foregroundGravity="center">
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorVideoViewLayer"
+            android:visibility="gone"
+            android:id="@+id/videoViewLayer"/>
+
+
+    </FrameLayout>
 
 </RelativeLayout>

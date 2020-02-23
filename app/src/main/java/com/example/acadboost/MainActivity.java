@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
-import com.amazonaws.amplify.generated.graphql.GetUserQuery;
 import com.amazonaws.amplify.generated.graphql.ListUsersQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
@@ -27,13 +26,11 @@ import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -47,8 +44,6 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.UUID;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 
 import org.json.JSONException;
@@ -206,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 facebookLoginImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         boolean loggedIn = AccessToken.getCurrentAccessToken() != null;
                         if(loggedIn) {
                             LoginManager.getInstance().logOut();
@@ -340,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
     }
 
     public void checkGoogleAccountExist(ListUsersQuery query,GoogleSignInAccount account) {
@@ -571,10 +566,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToLogin() {
         Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finish();
+        //finish();
     }
 
     public void goToHome() {
