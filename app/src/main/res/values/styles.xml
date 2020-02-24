@@ -6,7 +6,8 @@
         <item name="colorPrimary">@color/colorTheme</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/colorThemeTrans</item>
+        <item name="android:statusBarColor">@color/colorTheme</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
 <!--    No Action Bar-->

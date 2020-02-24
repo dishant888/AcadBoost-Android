@@ -21,12 +21,139 @@
             android:gravity="center"
             android:layout_gravity="center"/>
 
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorVideoViewLayer"
-            android:visibility="gone"
-            android:id="@+id/videoViewLayer"/>
+            android:visibility="visible"
+            android:id="@+id/videoViewLayer"
+            android:layout_gravity="center">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorVideoViewLayer"
+                android:id="@+id/videoViewLayerTop"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/ic_arrow_back"
+                        android:onClick="backClick"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="22sp"
+                        android:id="@+id/videoViewTitle"
+                        android:text="@string/app_name"
+                        android:layout_marginStart="20dp"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:id="@+id/videoViewLayerMid"
+                android:layout_centerInParent="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/videoViewControls"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_replay_10"
+                        android:id="@+id/videoViewReplayButton"
+                        android:visibility="visible"
+                        android:onClick="replayClick"
+                        android:layout_marginEnd="70dp"/>
+
+                    <ImageButton
+                        android:id="@+id/videoViewPlayPauseToggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_pause"
+                        android:onClick="playPauseClick"
+                        android:visibility="visible" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_forward_10"
+                        android:id="@+id/videoViewForwardButton"
+                        android:layout_marginStart="70dp"
+                        android:onClick="forwardClick"
+                        android:visibility="visible"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorVideoViewLayer"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/videoViewLayerBottom"
+                android:paddingBottom="20dp"
+                android:paddingTop="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingRight="5dp"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:id="@+id/videoStartTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00:00"
+                        android:textColor="@color/colorWhite"/>
+
+                    <SeekBar
+                        android:id="@+id/seekBar"
+                        android:layout_width="0dp"
+                        android:thumbTint="@color/colorTheme"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="2dp"
+                        android:progressTint="@color/colorTheme"
+                        android:layout_marginEnd="2dp"/>
+
+                    <TextView
+                        android:id="@+id/videoEndTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00:00"
+                        android:textColor="@color/colorWhite"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
 
     </FrameLayout>
