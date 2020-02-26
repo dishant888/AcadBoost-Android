@@ -51,6 +51,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         layer = findViewById(R.id.videoViewLayer);
         layer.setForegroundGravity(100);
         videoViewtitle.setText(intent.getStringExtra("actionBarTitle"));
+        hideLayer();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         playVideo();
@@ -206,6 +207,14 @@ public class VideoPlayerActivity extends AppCompatActivity {
             @Override
             public void onAnimationRepeat(Animator animation) {}
         });
+
+        View decoder = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        |View.SYSTEM_UI_FLAG_FULLSCREEN
+                        |View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        |View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        decoder.setSystemUiVisibility(uiOptions);
     }
 
     public void playPauseClick(View v) {
