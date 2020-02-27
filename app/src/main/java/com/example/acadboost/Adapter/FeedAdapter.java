@@ -44,8 +44,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         final FeedModel feedModel = feedModelList.get(position);
 
         holder.feedRowStatus.setText(feedModel.getStatus());
-        holder.feedRowComments.setText(feedModel.getComments());
-        holder.feedRowLikes.setText(feedModel.getLikes());
+        holder.feedRowComments.setText(feedModel.getComments().toString() + " comments");
+        holder.feedRowLikes.setText(feedModel.getLikes().toString());
         holder.feedRowTimeStamp.setText(feedModel.getTimeStamp());
         holder.feedRowUserName.setText(feedModel.getUserName());
 

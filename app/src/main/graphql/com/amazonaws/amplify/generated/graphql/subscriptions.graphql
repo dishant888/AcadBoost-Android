@@ -7,6 +7,14 @@ subscription OnCreateUser {
     password
     sign_up_type
     profile_picture_url
+    posts {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
+    }
   }
 }
 subscription OnUpdateUser {
@@ -17,6 +25,14 @@ subscription OnUpdateUser {
     password
     sign_up_type
     profile_picture_url
+    posts {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
+    }
   }
 }
 subscription OnDeleteUser {
@@ -27,6 +43,14 @@ subscription OnDeleteUser {
     password
     sign_up_type
     profile_picture_url
+    posts {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
+    }
   }
 }
 subscription OnCreateVideoDetailList {
@@ -57,5 +81,35 @@ subscription OnDeleteVideoDetailList {
     video_description
     bucket_name
     object_url
+  }
+}
+subscription OnCreatePost {
+  onCreatePost {
+    id
+    user_id
+    timestamp
+    status
+    likes
+    comments
+  }
+}
+subscription OnUpdatePost {
+  onUpdatePost {
+    id
+    user_id
+    timestamp
+    status
+    likes
+    comments
+  }
+}
+subscription OnDeletePost {
+  onDeletePost {
+    id
+    user_id
+    timestamp
+    status
+    likes
+    comments
   }
 }

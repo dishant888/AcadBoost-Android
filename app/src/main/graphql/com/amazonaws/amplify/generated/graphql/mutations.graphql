@@ -10,6 +10,14 @@ mutation CreateUser(
     password
     sign_up_type
     profile_picture_url
+    posts {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
+    }
   }
 }
 mutation UpdateUser(
@@ -23,6 +31,14 @@ mutation UpdateUser(
     password
     sign_up_type
     profile_picture_url
+    posts {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
+    }
   }
 }
 mutation DeleteUser(
@@ -36,6 +52,14 @@ mutation DeleteUser(
     password
     sign_up_type
     profile_picture_url
+    posts {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
+    }
   }
 }
 mutation CreateVideoDetailList(
@@ -75,5 +99,44 @@ mutation DeleteVideoDetailList(
     video_description
     bucket_name
     object_url
+  }
+}
+mutation CreatePost(
+  $input: CreatePostInput!
+  $condition: ModelPostConditionInput
+) {
+  createPost(input: $input, condition: $condition) {
+    id
+    user_id
+    timestamp
+    status
+    likes
+    comments
+  }
+}
+mutation UpdatePost(
+  $input: UpdatePostInput!
+  $condition: ModelPostConditionInput
+) {
+  updatePost(input: $input, condition: $condition) {
+    id
+    user_id
+    timestamp
+    status
+    likes
+    comments
+  }
+}
+mutation DeletePost(
+  $input: DeletePostInput!
+  $condition: ModelPostConditionInput
+) {
+  deletePost(input: $input, condition: $condition) {
+    id
+    user_id
+    timestamp
+    status
+    likes
+    comments
   }
 }

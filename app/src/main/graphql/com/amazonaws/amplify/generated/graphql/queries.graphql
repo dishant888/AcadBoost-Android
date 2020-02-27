@@ -7,6 +7,14 @@ query GetUser($id: ID!) {
     password
     sign_up_type
     profile_picture_url
+    posts {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
+    }
   }
 }
 query ListUsers(
@@ -22,6 +30,14 @@ query ListUsers(
       password
       sign_up_type
       profile_picture_url
+      posts {
+        id
+        user_id
+        timestamp
+        status
+        likes
+        comments
+      }
     }
     nextToken
   }
@@ -49,6 +65,33 @@ query ListVideoDetailLists(
       video_description
       bucket_name
       object_url
+    }
+    nextToken
+  }
+}
+query GetPost($id: ID!) {
+  getPost(id: $id) {
+    id
+    user_id
+    timestamp
+    status
+    likes
+    comments
+  }
+}
+query ListPosts(
+  $filter: ModelPostFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      user_id
+      timestamp
+      status
+      likes
+      comments
     }
     nextToken
   }
