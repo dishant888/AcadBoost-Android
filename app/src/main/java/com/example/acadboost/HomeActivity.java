@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     private ActionBarDrawerToggle toggle;
     SessionManager session;
     Fragment homeFragment = new HomeFragment();
-    Fragment videoFragment = new VideoFragment();
+    Fragment videoFragment = new CoursesFragment();
     Fragment userFragment = new UserFragment();
 
     private AWSAppSyncClient awsAppSyncClient;

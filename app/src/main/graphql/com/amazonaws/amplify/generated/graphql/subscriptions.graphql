@@ -53,33 +53,126 @@ subscription OnDeleteUser {
     }
   }
 }
-subscription OnCreateVideoDetailList {
-  onCreateVideoDetailList {
+subscription OnCreateCourseCategory {
+  onCreateCourseCategory {
     id
-    video_name
-    video_title
-    video_description
-    bucket_name
+    image_url
+    title
+    course_by
+    ratings
+    description
+    language
+    validity
+    subjects {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
+  }
+}
+subscription OnUpdateCourseCategory {
+  onUpdateCourseCategory {
+    id
+    image_url
+    title
+    course_by
+    ratings
+    description
+    language
+    validity
+    subjects {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
+  }
+}
+subscription OnDeleteCourseCategory {
+  onDeleteCourseCategory {
+    id
+    image_url
+    title
+    course_by
+    ratings
+    description
+    language
+    validity
+    subjects {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
+  }
+}
+subscription OnCreateSubject {
+  onCreateSubject {
+    id
+    name
+    description
+    videos {
+      id
+      title
+      object_url
+    }
+  }
+}
+subscription OnUpdateSubject {
+  onUpdateSubject {
+    id
+    name
+    description
+    videos {
+      id
+      title
+      object_url
+    }
+  }
+}
+subscription OnDeleteSubject {
+  onDeleteSubject {
+    id
+    name
+    description
+    videos {
+      id
+      title
+      object_url
+    }
+  }
+}
+subscription OnCreateVideo {
+  onCreateVideo {
+    id
+    title
     object_url
   }
 }
-subscription OnUpdateVideoDetailList {
-  onUpdateVideoDetailList {
+subscription OnUpdateVideo {
+  onUpdateVideo {
     id
-    video_name
-    video_title
-    video_description
-    bucket_name
+    title
     object_url
   }
 }
-subscription OnDeleteVideoDetailList {
-  onDeleteVideoDetailList {
+subscription OnDeleteVideo {
+  onDeleteVideo {
     id
-    video_name
-    video_title
-    video_description
-    bucket_name
+    title
     object_url
   }
 }
@@ -111,5 +204,35 @@ subscription OnDeletePost {
     status
     likes
     comments
+  }
+}
+subscription OnCreateVideoDetailList {
+  onCreateVideoDetailList {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}
+subscription OnUpdateVideoDetailList {
+  onUpdateVideoDetailList {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}
+subscription OnDeleteVideoDetailList {
+  onDeleteVideoDetailList {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
   }
 }

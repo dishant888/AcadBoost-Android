@@ -62,42 +62,153 @@ mutation DeleteUser(
     }
   }
 }
-mutation CreateVideoDetailList(
-  $input: CreateVideoDetailListInput!
-  $condition: ModelVideoDetailListConditionInput
+mutation CreateCourseCategory(
+  $input: CreateCourseCategoryInput!
+  $condition: ModelcourseCategoryConditionInput
 ) {
-  createVideoDetailList(input: $input, condition: $condition) {
+  createCourseCategory(input: $input, condition: $condition) {
     id
-    video_name
-    video_title
-    video_description
-    bucket_name
+    image_url
+    title
+    course_by
+    ratings
+    description
+    language
+    validity
+    subjects {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
+  }
+}
+mutation UpdateCourseCategory(
+  $input: UpdateCourseCategoryInput!
+  $condition: ModelcourseCategoryConditionInput
+) {
+  updateCourseCategory(input: $input, condition: $condition) {
+    id
+    image_url
+    title
+    course_by
+    ratings
+    description
+    language
+    validity
+    subjects {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
+  }
+}
+mutation DeleteCourseCategory(
+  $input: DeleteCourseCategoryInput!
+  $condition: ModelcourseCategoryConditionInput
+) {
+  deleteCourseCategory(input: $input, condition: $condition) {
+    id
+    image_url
+    title
+    course_by
+    ratings
+    description
+    language
+    validity
+    subjects {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
+  }
+}
+mutation CreateSubject(
+  $input: CreateSubjectInput!
+  $condition: ModelsubjectConditionInput
+) {
+  createSubject(input: $input, condition: $condition) {
+    id
+    name
+    description
+    videos {
+      id
+      title
+      object_url
+    }
+  }
+}
+mutation UpdateSubject(
+  $input: UpdateSubjectInput!
+  $condition: ModelsubjectConditionInput
+) {
+  updateSubject(input: $input, condition: $condition) {
+    id
+    name
+    description
+    videos {
+      id
+      title
+      object_url
+    }
+  }
+}
+mutation DeleteSubject(
+  $input: DeleteSubjectInput!
+  $condition: ModelsubjectConditionInput
+) {
+  deleteSubject(input: $input, condition: $condition) {
+    id
+    name
+    description
+    videos {
+      id
+      title
+      object_url
+    }
+  }
+}
+mutation CreateVideo(
+  $input: CreateVideoInput!
+  $condition: ModelvideoConditionInput
+) {
+  createVideo(input: $input, condition: $condition) {
+    id
+    title
     object_url
   }
 }
-mutation UpdateVideoDetailList(
-  $input: UpdateVideoDetailListInput!
-  $condition: ModelVideoDetailListConditionInput
+mutation UpdateVideo(
+  $input: UpdateVideoInput!
+  $condition: ModelvideoConditionInput
 ) {
-  updateVideoDetailList(input: $input, condition: $condition) {
+  updateVideo(input: $input, condition: $condition) {
     id
-    video_name
-    video_title
-    video_description
-    bucket_name
+    title
     object_url
   }
 }
-mutation DeleteVideoDetailList(
-  $input: DeleteVideoDetailListInput!
-  $condition: ModelVideoDetailListConditionInput
+mutation DeleteVideo(
+  $input: DeleteVideoInput!
+  $condition: ModelvideoConditionInput
 ) {
-  deleteVideoDetailList(input: $input, condition: $condition) {
+  deleteVideo(input: $input, condition: $condition) {
     id
-    video_name
-    video_title
-    video_description
-    bucket_name
+    title
     object_url
   }
 }
@@ -138,5 +249,44 @@ mutation DeletePost(
     status
     likes
     comments
+  }
+}
+mutation CreateVideoDetailList(
+  $input: CreateVideoDetailListInput!
+  $condition: ModelVideoDetailListConditionInput
+) {
+  createVideoDetailList(input: $input, condition: $condition) {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}
+mutation UpdateVideoDetailList(
+  $input: UpdateVideoDetailListInput!
+  $condition: ModelVideoDetailListConditionInput
+) {
+  updateVideoDetailList(input: $input, condition: $condition) {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}
+mutation DeleteVideoDetailList(
+  $input: DeleteVideoDetailListInput!
+  $condition: ModelVideoDetailListConditionInput
+) {
+  deleteVideoDetailList(input: $input, condition: $condition) {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
   }
 }

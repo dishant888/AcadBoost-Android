@@ -42,28 +42,99 @@ query ListUsers(
     nextToken
   }
 }
-query GetVideoDetailList($id: ID!) {
-  getVideoDetailList(id: $id) {
+query GetCourseCategory($id: ID!) {
+  getCourseCategory(id: $id) {
     id
-    video_name
-    video_title
-    video_description
-    bucket_name
-    object_url
+    image_url
+    title
+    course_by
+    ratings
+    description
+    language
+    validity
+    subjects {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
   }
 }
-query ListVideoDetailLists(
-  $filter: ModelVideoDetailListFilterInput
+query ListCourseCategorys(
+  $filter: ModelcourseCategoryFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listVideoDetailLists(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listCourseCategorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      video_name
-      video_title
-      video_description
-      bucket_name
+      image_url
+      title
+      course_by
+      ratings
+      description
+      language
+      validity
+      subjects {
+        id
+        name
+        description
+      }
+    }
+    nextToken
+  }
+}
+query GetSubject($id: ID!) {
+  getSubject(id: $id) {
+    id
+    name
+    description
+    videos {
+      id
+      title
+      object_url
+    }
+  }
+}
+query ListSubjects(
+  $filter: ModelsubjectFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listSubjects(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      description
+      videos {
+        id
+        title
+        object_url
+      }
+    }
+    nextToken
+  }
+}
+query GetVideo($id: ID!) {
+  getVideo(id: $id) {
+    id
+    title
+    object_url
+  }
+}
+query ListVideos(
+  $filter: ModelvideoFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listVideos(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      title
       object_url
     }
     nextToken
@@ -92,6 +163,33 @@ query ListPosts(
       status
       likes
       comments
+    }
+    nextToken
+  }
+}
+query GetVideoDetailList($id: ID!) {
+  getVideoDetailList(id: $id) {
+    id
+    video_name
+    video_title
+    video_description
+    bucket_name
+    object_url
+  }
+}
+query ListVideoDetailLists(
+  $filter: ModelVideoDetailListFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listVideoDetailLists(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      video_name
+      video_title
+      video_description
+      bucket_name
+      object_url
     }
     nextToken
   }

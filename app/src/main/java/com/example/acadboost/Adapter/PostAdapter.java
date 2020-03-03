@@ -9,60 +9,54 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.example.acadboost.Model.FeedModel;
+import com.example.acadboost.Model.PostModel;
 import com.example.acadboost.R;
 
 import java.util.ArrayList;
 
-public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
     public Context context;
-    private ArrayList<FeedModel> feedModelList = new ArrayList<>();
-    private RequestManager glide;
+    private ArrayList<PostModel> postModelList;
 
-    public FeedAdapter(Context context,ArrayList<FeedModel> feedModelList) {
+    public PostAdapter(Context context, ArrayList<PostModel> postModelList) {
         this.context = context;
-        this.feedModelList = feedModelList;
-        glide = Glide.with(context);
+        this.postModelList = postModelList;
     }
 
     @NonNull
     @Override
-    public FeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_row,parent,false);
-        FeedViewHolder holder = new FeedViewHolder(v);
-
-        return holder;
+        return new PostViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
 
-        final FeedModel feedModel = feedModelList.get(position);
+        final PostModel postModel = postModelList.get(position);
 
-        holder.feedRowStatus.setText(feedModel.getStatus());
-        holder.feedRowComments.setText(feedModel.getComments().toString() + " comments");
-        holder.feedRowLikes.setText(feedModel.getLikes().toString());
-        holder.feedRowTimeStamp.setText(feedModel.getTimeStamp());
-        holder.feedRowUserName.setText(feedModel.getUserName());
-
-        glide.load(feedModel.getUserProfilePictureUrl()).into(holder.feedRowUserProfilePic);
+        holder.feedRowStatus.setText(postModel.getStatus());
+        holder.feedRowComments.setText(postModel.getComments().toString() + " comments");
+        holder.feedRowLikes.setText(postModel.getLikes().toString());
+        holder.feedRowTimeStamp.setText(postModel.getTimeStamp());
+        Glide.with(holder.feedRowUserProfilePic.getContext()).load(postModel.getUserProfilePictureUrl()).into(holder.feedRowUserProfilePic);
+        holder.feedRowUserName.setText(postModel.getUserName());
     }
 
     @Override
     public int getItemCount() {
-        return feedModelList.size();
+        return postModelList.size();
     }
 
-    public class FeedViewHolder extends RecyclerView.ViewHolder {
+    public class PostViewHolder extends RecyclerView.ViewHolder {
 
         TextView feedRowUserName,feedRowTimeStamp,feedRowLikes,feedRowComments,feedRowStatus;
         ImageView feedRowUserProfilePic;
 
-        public FeedViewHolder(@NonNull View itemView) {
+        public PostViewHolder(@NonNull View itemView) {
             super(itemView);
 
             feedRowUserProfilePic = itemView.findViewById(R.id.feedRowProfilePic);
@@ -72,5 +66,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
             feedRowComments = itemView.findViewById(R.id.feedRowComments);
             feedRowStatus = itemView.findViewById(R.id.feedRowStatus);
         }
+
     }
 }

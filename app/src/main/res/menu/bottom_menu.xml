@@ -8,7 +8,7 @@
         android:id="@+id/homeMenu"/>
 
     <item
-        android:title="Videos"
+        android:title="Courses"
         android:icon="@drawable/ic_video"
         android:id="@+id/videoMenu"/>
 

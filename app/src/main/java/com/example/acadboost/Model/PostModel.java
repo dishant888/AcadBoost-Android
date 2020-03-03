@@ -1,5 +1,7 @@
 package com.example.acadboost.Model;
 
+import android.util.Log;
+
 import com.amazonaws.amplify.generated.graphql.GetUserQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
@@ -7,19 +9,18 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
-import com.google.android.material.internal.ParcelableSparseArray;
 
 import javax.annotation.Nonnull;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class FeedModel {
+public class PostModel {
 
     private String id,userID,timeStamp,userName,userProfilePictureUrl,status;
     private Integer likes,comments;
     private AWSAppSyncClient awsAppSyncClient;
 
-    public FeedModel(String id, String userID, String timeStamp, String status, Integer likes, Integer comments) {
+    public PostModel(String id, String userID, String timeStamp, String status, Integer likes, Integer comments) {
         this.id = id;
         this.userID = userID;
         this.timeStamp = timeStamp;
@@ -42,6 +43,7 @@ public class FeedModel {
                 .enqueue(new GraphQLCall.Callback<GetUserQuery.Data>() {
                     @Override
                     public void onResponse(@Nonnull Response<GetUserQuery.Data> response) {
+                        Log.i("RES",response.data().toString());
                         setUserName(response.data().getUser().name());
                         setUserProfilePictureUrl(response.data().getUser().profile_picture_url());
                     }
