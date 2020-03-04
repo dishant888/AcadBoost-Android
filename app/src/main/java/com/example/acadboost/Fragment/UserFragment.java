@@ -1,4 +1,4 @@
-package com.example.acadboost;
+package com.example.acadboost.Fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.acadboost.R;
+import com.example.acadboost.SessionManager;
 
 import java.util.HashMap;
 

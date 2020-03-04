@@ -7,8 +7,9 @@
     android:padding="10dp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/courseRowCard"
         android:layout_width="match_parent"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="2dp"
         app:cardElevation="20dp"
         android:layout_height="wrap_content">
 
@@ -31,8 +32,9 @@
 
                         <ImageView
                             android:id="@+id/courseListRowImage"
+                            android:transitionName="sharedImage"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="200dp"
                             android:background="@color/colorTheme"/>
 
                         <View
@@ -51,9 +53,10 @@
                                 android:id="@+id/courseListRowRatings"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:isIndicator="true"
                                 android:progressTint="@color/colorTheme"
-                                android:rating="4.5"
-                                android:stepSize="0.2"
+                                android:rating="3.7"
+                                android:stepSize="0.1"
                                 style="?android:ratingBarStyleSmall"
                                 android:numStars="5"/>
 
@@ -83,7 +86,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/courseListRowTitle"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
+                    android:transitionName="sharedTitle"
+                    android:textStyle="bold"
                     android:text="Course-title"
                     android:textColor="@color/colorBlack"/>
 

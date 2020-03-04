@@ -1,6 +1,11 @@
 package com.example.acadboost.Adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,15 +14,16 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
+import com.example.acadboost.CourseDetailActivity;
 import com.example.acadboost.Model.CourseListModel;
 import com.example.acadboost.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesViewHolder> {
 
@@ -47,6 +53,22 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
         holder.ratingBar.setRating(Float.valueOf(String.valueOf(course.getRatings())));
 
         Glide.with(holder.image.getContext()).load(course.getImageURL()).centerCrop().into(holder.image);
+
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Pair[] pairs = new Pair[2];
+                pairs[0] = new Pair<View,String>(holder.image,holder.image.getTransitionName());
+                pairs[1] = new Pair<View,String>(holder.title,holder.title.getTransitionName());
+
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext(),pairs).toBundle();
+                Intent i = new Intent(v.getContext(), CourseDetailActivity.class);
+                i.putExtra("URL",course.getImageURL());
+                i.putExtra("Title",course.getTitle());
+                v.getContext().startActivity(i,bundle);
+            }
+        });
     }
 
     @Override
@@ -57,6 +79,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
     public class CoursesViewHolder extends RecyclerView.ViewHolder {
 
         ImageView image;
+        CardView card;
         TextView title,courseBy;
         RatingBar ratingBar;
         public CoursesViewHolder(@NonNull View itemView) {
@@ -66,6 +89,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
             title = itemView.findViewById(R.id.courseListRowTitle);
             courseBy = itemView.findViewById(R.id.courseListRowCourseBy);
             ratingBar = itemView.findViewById(R.id.courseListRowRatings);
+            card = itemView.findViewById(R.id.courseRowCard);
         }
     }
 }

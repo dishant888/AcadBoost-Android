@@ -1,4 +1,4 @@
-package com.example.acadboost;
+package com.example.acadboost.Fragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,13 +20,12 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.acadboost.Adapter.CoursesAdapter;
 import com.example.acadboost.Model.CourseListModel;
+import com.example.acadboost.R;
 
 import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
-import type.ModelcourseCategoryConditionInput;
-import type.ModelcourseCategoryFilterInput;
 
 
 public class CoursesFragment extends Fragment {
@@ -79,11 +78,11 @@ public class CoursesFragment extends Fragment {
 //        listView.setAdapter(adapter);
 
         recyclerView = view.findViewById(R.id.courseListRecyclerView);
+
         adapter = new CoursesAdapter(getContext(),courseList);
         recyclerView.setAdapter(adapter);
 
         fetchCourse();
-
         return view;
     }
 

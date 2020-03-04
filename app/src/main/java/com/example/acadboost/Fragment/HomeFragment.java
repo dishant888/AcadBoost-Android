@@ -1,4 +1,4 @@
-package com.example.acadboost;
+package com.example.acadboost.Fragment;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +21,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.example.acadboost.Adapter.PostAdapter;
 import com.example.acadboost.Model.PostModel;
+import com.example.acadboost.R;
 
 import java.util.ArrayList;
 
