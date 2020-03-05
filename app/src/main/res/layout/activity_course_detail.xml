@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CourseDetailActivity">
@@ -11,37 +12,157 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/courseDetailImage"
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="200dp"
+            android:transitionName="sharedImage" />
 
-            <ImageView
-                android:id="@+id/courseDetailImage"
-                android:transitionName="sharedImage"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/colorTheme"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/course_list_gradient_layer"/>
-
-        </FrameLayout>
-
-        <TextView
-            android:padding="10dp"
-            android:id="@+id/courseDetailTitle"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="20sp"
-            android:transitionName="sharedTitle"
-            android:textColor="@color/colorBlack"
-            android:textStyle="bold"
-            android:text="Title"
-            android:layout_marginTop="20dp"/>
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/courseDetailTitle"
+                    android:textSize="16sp"
+                    android:transitionName="sharedTitle"
+                    android:textStyle="bold"
+                    android:text="Course-title"
+                    android:textColor="@color/colorBlack"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Learn from AIR 1 himself :D"/>
+
+                <RelativeLayout
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatRatingBar
+                        android:id="@+id/courseDetailRatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="true"
+                        android:transitionName="sharedRatingBar"
+                        android:progressTint="@color/colorTheme"
+                        android:rating="3.7"
+                        android:layout_marginTop="2dp"
+                        android:stepSize="0.1"
+                        style="?android:ratingBarStyleSmall"
+                        android:numStars="5"/>
+
+                    <TextView
+                        android:id="@+id/courseDetailRatings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:transitionName="sharedRatings"
+                        android:gravity="right"
+                        android:text="4.5"
+                        android:layout_marginStart="5dp"
+                        android:layout_toRightOf="@+id/courseDetailRatingBar"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Instructor: "/>
+
+                    <TextView
+                        android:id="@+id/courseDetailCourseBy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:transitionName="sharedCourseBy"
+                        android:text="Dishant Sukhwal"
+                        android:textColor="@color/colorTheme"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Language: "/>
+
+                    <TextView
+                        android:id="@+id/courseDetailLanguage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hinglish"
+                        android:textColor="@color/colorTheme"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Valid Till: "/>
+
+                    <TextView
+                        android:id="@+id/courseDetailValidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="validity"
+                        android:textColor="@color/colorTheme"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        android:id="@+id/courseDetailTabLayout"
+        app:tabTextColor="@color/colorTheme"
+        app:tabIndicatorColor="@color/colorTheme">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content"/>
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/courseDetailViewPager"/>
+
+</LinearLayout>

@@ -20,11 +20,11 @@
             <RelativeLayout
                 android:id="@+id/courseListRowTop"
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="wrap_content">
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="200dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -34,10 +34,10 @@
                             android:id="@+id/courseListRowImage"
                             android:transitionName="sharedImage"
                             android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:background="@color/colorTheme"/>
+                            android:layout_height="200dp"/>
 
                         <View
+                            android:id="@+id/courseListImageLayer"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/course_list_gradient_layer"/>
@@ -49,18 +49,38 @@
                             android:orientation="vertical"
                             android:padding="10dp">
 
-                            <androidx.appcompat.widget.AppCompatRatingBar
-                                android:id="@+id/courseListRowRatings"
+                            <RelativeLayout
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:isIndicator="true"
-                                android:progressTint="@color/colorTheme"
-                                android:rating="3.7"
-                                android:stepSize="0.1"
-                                style="?android:ratingBarStyleSmall"
-                                android:numStars="5"/>
+                                android:layout_height="wrap_content">
+
+                                <androidx.appcompat.widget.AppCompatRatingBar
+                                    android:id="@+id/courseListRowRatingBar"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:isIndicator="true"
+                                    android:transitionName="sharedRatingBar"
+                                    android:progressTint="@color/colorTheme"
+                                    android:rating="3.7"
+                                    android:layout_marginTop="2dp"
+                                    android:stepSize="0.1"
+                                    style="?android:ratingBarStyleSmall"
+                                    android:numStars="5"/>
+
+                                <TextView
+                                    android:id="@+id/courseListRowRatings"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:transitionName="sharedRatings"
+                                    android:gravity="right"
+                                    android:text="4.5"
+                                    android:textColor="#FFFFFF"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_toRightOf="@+id/courseListRowRatingBar"/>
+
+                            </RelativeLayout>
 
                             <TextView
+                                android:transitionName="sharedCourseBy"
                                 android:id="@+id/courseListRowCourseBy"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"

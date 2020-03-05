@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CourseDetailActivity"></activity>
+        <activity android:name=".CourseDetailActivity"/>
         <activity
             android:name=".VideoPlayerActivity"
             android:parentActivityName=".HomeActivity"
@@ -35,7 +35,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Facebook SignIn Activity -->
+        </activity>
+        <!-- Facebook SignIn Activity -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

@@ -99,7 +99,7 @@ public class CoursesFragment extends Fragment {
 
                             for(ListCourseCategorysQuery.Item row : response.data().listCourseCategorys().items()) {
 
-                                CourseListModel course = new CourseListModel(row.title(),row.course_by(),row.image_url(),row.ratings());
+                                CourseListModel course = new CourseListModel(row.title(),row.course_by(),row.image_url(),row.description(),row.language(),row.validity(),row.ratings());
                                 courseList.add(course);
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
@@ -116,51 +116,6 @@ public class CoursesFragment extends Fragment {
 
                     }
                 });
-    }
-
-    private class fetchCourses extends AsyncTask<Void ,Void ,Void>{
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            ListCourseCategorysQuery query = ListCourseCategorysQuery.builder().build();
-
-            awsAppSyncClient.query(query)
-                    .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
-                    .enqueue(new GraphQLCall.Callback<ListCourseCategorysQuery.Data>() {
-                        @Override
-                        public void onResponse(@Nonnull Response<ListCourseCategorysQuery.Data> response) {
-                            if(!response.data().listCourseCategorys().items().isEmpty()) {
-
-                                for(ListCourseCategorysQuery.Item row : response.data().listCourseCategorys().items()) {
-
-                                    CourseListModel course = new CourseListModel(row.title(),row.course_by(),row.image_url(),row.ratings());
-                                    courseList.add(course);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@Nonnull ApolloException e) {
-
-                        }
-                    });
-
-            return null;
-        }
     }
 
 //    class videoListAdapter extends ArrayAdapter<String> {

@@ -5,6 +5,8 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
         holder.title.setText(course.getTitle());
         holder.courseBy.setText(course.getCourseBy());
         holder.ratingBar.setRating(Float.valueOf(String.valueOf(course.getRatings())));
+        holder.ratings.setText(String.valueOf(course.getRatings()));
 
         Glide.with(holder.image.getContext()).load(course.getImageURL()).centerCrop().into(holder.image);
 
@@ -58,14 +61,17 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
             @Override
             public void onClick(View v) {
 
-                Pair[] pairs = new Pair[2];
+                Pair[] pairs = new Pair[5];
                 pairs[0] = new Pair<View,String>(holder.image,holder.image.getTransitionName());
                 pairs[1] = new Pair<View,String>(holder.title,holder.title.getTransitionName());
+                pairs[2] = new Pair<View,String>(holder.ratingBar,holder.ratingBar.getTransitionName());
+                pairs[3] = new Pair<View,String>(holder.ratings,holder.ratings.getTransitionName());
+                pairs[4] = new Pair<View,String>(holder.courseBy,holder.courseBy.getTransitionName());
 
                 Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext(),pairs).toBundle();
                 Intent i = new Intent(v.getContext(), CourseDetailActivity.class);
-                i.putExtra("URL",course.getImageURL());
-                i.putExtra("Title",course.getTitle());
+
+                i.putExtra("COURSE",course);
                 v.getContext().startActivity(i,bundle);
             }
         });
@@ -80,7 +86,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
 
         ImageView image;
         CardView card;
-        TextView title,courseBy;
+        TextView title,courseBy,ratings;
         RatingBar ratingBar;
         public CoursesViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,8 +94,9 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CoursesV
             image = itemView.findViewById(R.id.courseListRowImage);
             title = itemView.findViewById(R.id.courseListRowTitle);
             courseBy = itemView.findViewById(R.id.courseListRowCourseBy);
-            ratingBar = itemView.findViewById(R.id.courseListRowRatings);
+            ratingBar = itemView.findViewById(R.id.courseListRowRatingBar);
             card = itemView.findViewById(R.id.courseRowCard);
+            ratings = itemView.findViewById(R.id.courseListRowRatings);
         }
     }
 }
