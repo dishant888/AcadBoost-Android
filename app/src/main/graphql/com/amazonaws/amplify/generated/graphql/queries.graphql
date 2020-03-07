@@ -54,10 +54,12 @@ query GetCourseCategory($id: ID!) {
     validity
     subjects {
       id
+      course_id
       name
       description
       videos {
         id
+        subject_id
         title
         object_url
       }
@@ -81,6 +83,7 @@ query ListCourseCategorys(
       validity
       subjects {
         id
+        course_id
         name
         description
       }
@@ -91,10 +94,12 @@ query ListCourseCategorys(
 query GetSubject($id: ID!) {
   getSubject(id: $id) {
     id
+    course_id
     name
     description
     videos {
       id
+      subject_id
       title
       object_url
     }
@@ -108,10 +113,12 @@ query ListSubjects(
   listSubjects(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      course_id
       name
       description
       videos {
         id
+        subject_id
         title
         object_url
       }
@@ -122,6 +129,7 @@ query ListSubjects(
 query GetVideo($id: ID!) {
   getVideo(id: $id) {
     id
+    subject_id
     title
     object_url
   }
@@ -134,6 +142,7 @@ query ListVideos(
   listVideos(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      subject_id
       title
       object_url
     }

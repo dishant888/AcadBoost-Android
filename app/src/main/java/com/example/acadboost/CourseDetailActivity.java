@@ -49,13 +49,20 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         CourseListModel course = intent.getParcelableExtra("COURSE");
+
         Bundle descriptionFragmentArgs = new Bundle();
         descriptionFragmentArgs.putString("DESCRIPTION",course.getDescription());
         descriptionFragment.setArguments(descriptionFragmentArgs);
+
+        Bundle contentFragmentArgs = new Bundle();
+        contentFragmentArgs.putString("course_id",course.getID());
+        contentFragment.setArguments(contentFragmentArgs);
+
         tabLayout.setupWithViewPager(viewPager);
+
         CourseViewPagerAdapter adapter = new CourseViewPagerAdapter(getSupportFragmentManager(),0);
         adapter.addFragment(descriptionFragment,"Description");
-        adapter.addFragment(new CourseContentFragment(),"Content");
+        adapter.addFragment(contentFragment,"Content");
         viewPager.setAdapter(adapter);
 
         setData(course);

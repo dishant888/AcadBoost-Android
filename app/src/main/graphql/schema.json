@@ -1331,6 +1331,22 @@
                         "deprecationReason": null
                     },
                     {
+                        "name": "course_id",
+                        "description": null,
+                        "args": [],
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": null,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "String",
+                                "ofType": null
+                            }
+                        },
+                        "isDeprecated": false,
+                        "deprecationReason": null
+                    },
+                    {
                         "name": "name",
                         "description": null,
                         "args": [],
@@ -1399,6 +1415,22 @@
                             "ofType": {
                                 "kind": "SCALAR",
                                 "name": "ID",
+                                "ofType": null
+                            }
+                        },
+                        "isDeprecated": false,
+                        "deprecationReason": null
+                    },
+                    {
+                        "name": "subject_id",
+                        "description": null,
+                        "args": [],
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": null,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "String",
                                 "ofType": null
                             }
                         },
@@ -1878,6 +1910,16 @@
                         "defaultValue": null
                     },
                     {
+                        "name": "course_id",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
                         "name": "name",
                         "description": null,
                         "type": {
@@ -1991,6 +2033,16 @@
                         "type": {
                             "kind": "INPUT_OBJECT",
                             "name": "ModelIDInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "subject_id",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
                             "ofType": null
                         },
                         "defaultValue": null
@@ -3931,6 +3983,20 @@
                         "defaultValue": null
                     },
                     {
+                        "name": "course_id",
+                        "description": null,
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": null,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "String",
+                                "ofType": null
+                            }
+                        },
+                        "defaultValue": null
+                    },
+                    {
                         "name": "name",
                         "description": null,
                         "type": {
@@ -3969,6 +4035,16 @@
                 "description": null,
                 "fields": null,
                 "inputFields": [
+                    {
+                        "name": "course_id",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
                     {
                         "name": "name",
                         "description": null,
@@ -4053,6 +4129,16 @@
                         "defaultValue": null
                     },
                     {
+                        "name": "course_id",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
                         "name": "name",
                         "description": null,
                         "type": {
@@ -4115,6 +4201,20 @@
                         "defaultValue": null
                     },
                     {
+                        "name": "subject_id",
+                        "description": null,
+                        "type": {
+                            "kind": "NON_NULL",
+                            "name": null,
+                            "ofType": {
+                                "kind": "SCALAR",
+                                "name": "String",
+                                "ofType": null
+                            }
+                        },
+                        "defaultValue": null
+                    },
+                    {
                         "name": "title",
                         "description": null,
                         "type": {
@@ -4153,6 +4253,16 @@
                 "description": null,
                 "fields": null,
                 "inputFields": [
+                    {
+                        "name": "subject_id",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
                     {
                         "name": "title",
                         "description": null,
@@ -4233,6 +4343,16 @@
                                 "name": "ID",
                                 "ofType": null
                             }
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "subject_id",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
                         },
                         "defaultValue": null
                     },

@@ -5,11 +5,12 @@ import android.os.Parcelable;
 
 public class CourseListModel implements Parcelable {
 
-    private String title,courseBy,imageURL;
+    private String ID,title,courseBy,imageURL;
     private Double ratings;
     private String description,lang,validity;
 
-    public CourseListModel(String title, String courseBy, String imageURL, String description, String lang, String validity, Double ratings) {
+    public CourseListModel(String id,String title, String courseBy, String imageURL, String description, String lang, String validity, Double ratings) {
+        this.ID = id;
         this.title = title;
         this.description = description;
         this.lang = lang;
@@ -20,6 +21,7 @@ public class CourseListModel implements Parcelable {
     }
 
     protected CourseListModel(Parcel in) {
+        ID = in.readString();
         title = in.readString();
         courseBy = in.readString();
         imageURL = in.readString();
@@ -35,6 +37,7 @@ public class CourseListModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ID);
         dest.writeString(title);
         dest.writeString(courseBy);
         dest.writeString(imageURL);
@@ -65,6 +68,14 @@ public class CourseListModel implements Parcelable {
             return new CourseListModel[size];
         }
     };
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
 
     public String getTitle() {
         return title;

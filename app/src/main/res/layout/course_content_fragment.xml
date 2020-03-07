@@ -4,11 +4,10 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Content"
-        android:textColor="@color/colorTheme"
-        android:textSize="20dp"/>
+    <ExpandableListView
+        android:id="@+id/courseExpandableListView"
+        android:layout_width="match_parent"
+        android:groupIndicator="@null"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

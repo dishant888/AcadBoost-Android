@@ -32,10 +32,10 @@ public class CoursesFragment extends Fragment {
 
 //    private ListView listView;
 //    private CoursesFragment.videoListAdapter adapter;
-    private ArrayList<String> mTitleList;
-    private ArrayList<String> mDescriptionList;
-    private ArrayList<Integer> mImageList;
-    private ArrayList<String> mObjectUrl;
+//    private ArrayList<String> mTitleList;
+//    private ArrayList<String> mDescriptionList;
+//    private ArrayList<Integer> mImageList;
+//    private ArrayList<String> mObjectUrl;
 
     private AWSAppSyncClient awsAppSyncClient;
     private ArrayList<CourseListModel> courseList;
@@ -45,10 +45,10 @@ public class CoursesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTitleList = new ArrayList<>();
-        mDescriptionList = new ArrayList<>();
-        mImageList = new ArrayList<>();
-        mObjectUrl = new ArrayList<>();
+//        mTitleList = new ArrayList<>();
+//        mDescriptionList = new ArrayList<>();
+//        mImageList = new ArrayList<>();
+//        mObjectUrl = new ArrayList<>();
 
         //AWS App Sync Cilent
         awsAppSyncClient = AWSAppSyncClient.builder()
@@ -59,10 +59,10 @@ public class CoursesFragment extends Fragment {
         courseList = new ArrayList<>();
 
         savedInstanceState = this.getArguments();
-        mTitleList = savedInstanceState.getStringArrayList("titleArrayList");
-        mDescriptionList = savedInstanceState.getStringArrayList("descriptionArrayList");
-        mImageList = savedInstanceState.getIntegerArrayList("imageArrayList");
-        mObjectUrl = savedInstanceState.getStringArrayList("objectUrlArrayList");
+//        mTitleList = savedInstanceState.getStringArrayList("titleArrayList");
+//        mDescriptionList = savedInstanceState.getStringArrayList("descriptionArrayList");
+//        mImageList = savedInstanceState.getIntegerArrayList("imageArrayList");
+//        mObjectUrl = savedInstanceState.getStringArrayList("objectUrlArrayList");
     }
 
     @Nullable
@@ -99,7 +99,7 @@ public class CoursesFragment extends Fragment {
 
                             for(ListCourseCategorysQuery.Item row : response.data().listCourseCategorys().items()) {
 
-                                CourseListModel course = new CourseListModel(row.title(),row.course_by(),row.image_url(),row.description(),row.language(),row.validity(),row.ratings());
+                                CourseListModel course = new CourseListModel(row.id(),row.title(),row.course_by(),row.image_url(),row.description(),row.language(),row.validity(),row.ratings());
                                 courseList.add(course);
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override

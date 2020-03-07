@@ -77,10 +77,12 @@ mutation CreateCourseCategory(
     validity
     subjects {
       id
+      course_id
       name
       description
       videos {
         id
+        subject_id
         title
         object_url
       }
@@ -102,10 +104,12 @@ mutation UpdateCourseCategory(
     validity
     subjects {
       id
+      course_id
       name
       description
       videos {
         id
+        subject_id
         title
         object_url
       }
@@ -127,10 +131,12 @@ mutation DeleteCourseCategory(
     validity
     subjects {
       id
+      course_id
       name
       description
       videos {
         id
+        subject_id
         title
         object_url
       }
@@ -143,10 +149,12 @@ mutation CreateSubject(
 ) {
   createSubject(input: $input, condition: $condition) {
     id
+    course_id
     name
     description
     videos {
       id
+      subject_id
       title
       object_url
     }
@@ -158,10 +166,12 @@ mutation UpdateSubject(
 ) {
   updateSubject(input: $input, condition: $condition) {
     id
+    course_id
     name
     description
     videos {
       id
+      subject_id
       title
       object_url
     }
@@ -173,10 +183,12 @@ mutation DeleteSubject(
 ) {
   deleteSubject(input: $input, condition: $condition) {
     id
+    course_id
     name
     description
     videos {
       id
+      subject_id
       title
       object_url
     }
@@ -188,6 +200,7 @@ mutation CreateVideo(
 ) {
   createVideo(input: $input, condition: $condition) {
     id
+    subject_id
     title
     object_url
   }
@@ -198,6 +211,7 @@ mutation UpdateVideo(
 ) {
   updateVideo(input: $input, condition: $condition) {
     id
+    subject_id
     title
     object_url
   }
@@ -208,6 +222,7 @@ mutation DeleteVideo(
 ) {
   deleteVideo(input: $input, condition: $condition) {
     id
+    subject_id
     title
     object_url
   }
