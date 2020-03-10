@@ -38,8 +38,7 @@ public class CourseContentFragment extends Fragment {
 
     private ExpandableListView expandableListView;
     private List<SubjectModel> subjectGroup;
-    private List<VideoModel> videoList;
-    private HashMap<SubjectModel,List<VideoModel>> hashMap;
+    private HashMap<String,List<VideoModel>> hashMap;
     private CourseContentAdapter adapter;
     private String course_id;
     private AWSAppSyncClient awsAppSyncClient;
@@ -64,17 +63,16 @@ public class CourseContentFragment extends Fragment {
 
         expandableListView = view.findViewById(R.id.courseExpandableListView);
         subjectGroup = new ArrayList<>();
-        videoList = new ArrayList<>();
         hashMap = new HashMap<>();
         adapter = new CourseContentAdapter(getContext(),subjectGroup,hashMap);
         expandableListView.setAdapter(adapter);
 
         fetchSubjects(course_id);
-        Log.i("CONTENT COURSE_ID",course_id);
+
         return  view;
     }
 
-    private void fetchSubjects(String course_id) {
+    private void fetchSubjects(final String course_id) {
 
         ModelStringInput StringInput = ModelStringInput.builder().eq(course_id).build();
         ModelsubjectFilterInput filter = ModelsubjectFilterInput.builder().course_id(StringInput).build();
@@ -91,7 +89,9 @@ public class CourseContentFragment extends Fragment {
 
                                 final SubjectModel subject = new SubjectModel(row.id(),row.name(),row.description());
                                 subjectGroup.add(subject);
-                                fetchVideos(subject);
+                                String subject_id = subject.getID();
+                                Log.i("VALUES SUBJECT NAME",subject.getName());
+                                fetchVideos(subject_id);
                             }
                         }
                     }
@@ -103,9 +103,9 @@ public class CourseContentFragment extends Fragment {
                 });
     }
 
-    private void fetchVideos(SubjectModel subject) {
+    private void fetchVideos(final String subject_id) {
 
-        ModelStringInput StringInput = ModelStringInput.builder().eq(subject.getID()).build();
+        ModelStringInput StringInput = ModelStringInput.builder().eq(subject_id).build();
         ModelvideoFilterInput filter = ModelvideoFilterInput.builder().subject_id(StringInput).build();
         ListVideosQuery query = ListVideosQuery.builder().filter(filter).build();
 
@@ -116,15 +116,15 @@ public class CourseContentFragment extends Fragment {
                     public void onResponse(@Nonnull Response<ListVideosQuery.Data> response) {
                         if(!response.data().listVideos().items().isEmpty()) {
 
+                            List<VideoModel> videoList = new ArrayList<>();
+
                             for(ListVideosQuery.Item row : response.data().listVideos().items()) {
 
                                 final VideoModel video = new VideoModel(row.id(),row.title(),row.object_url());
                                 videoList.add(video);
-                                Log.i("CONTENT SUBJECT_NAME",subject.getName());
-                                Log.i("CONTENT VIDEO_TITLE",video.getTitle());
                             }
 
-                            hashMap.put(subject,videoList);
+                            hashMap.put(subject_id,videoList);
 
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override

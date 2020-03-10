@@ -1,15 +1,19 @@
 package com.example.acadboost.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.acadboost.Model.SubjectModel;
 import com.example.acadboost.Model.VideoModel;
 import com.example.acadboost.R;
+import com.example.acadboost.VideoPlayerActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +22,9 @@ public class CourseContentAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<SubjectModel> subjectGroups;
-    private HashMap<SubjectModel,List<VideoModel>> videoLists;
+    private HashMap<String,List<VideoModel>> videoLists;
 
-    public CourseContentAdapter(Context context, List<SubjectModel> subjectGroups, HashMap<SubjectModel, List<VideoModel>> videoLists) {
+    public CourseContentAdapter(Context context, List<SubjectModel> subjectGroups, HashMap<String, List<VideoModel>> videoLists) {
         this.context = context;
         this.subjectGroups = subjectGroups;
         this.videoLists = videoLists;
@@ -33,8 +37,11 @@ public class CourseContentAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-//        return this.videoLists.get(this.subjectGroups.get(groupPosition)).size();
-        return 1;
+        SubjectModel subject = getGroup(groupPosition);
+        List<VideoModel> videos = videoLists.get(subject.getID());
+        int count = videos.size();
+
+        return count;
     }
 
     @Override
@@ -44,7 +51,8 @@ public class CourseContentAdapter extends BaseExpandableListAdapter {
 
     @Override
     public VideoModel getChild(int groupPosition, int childPosition) {
-        return this.videoLists.get(this.subjectGroups.get(groupPosition)).get(childPosition);
+        SubjectModel subject = subjectGroups.get(groupPosition);
+        return this.videoLists.get(subject.getID()).get(childPosition);
     }
 
     @Override
@@ -88,6 +96,18 @@ public class CourseContentAdapter extends BaseExpandableListAdapter {
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.subject_group_child_row,null);
         }
+
+        LinearLayout row = convertView.findViewById(R.id.subjectGroupChildRow);
+
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, VideoPlayerActivity.class);
+                intent.putExtra("objectUrl",video.getObjectURL());
+                intent.putExtra("actionBarTitle",video.getTitle());
+                context.startActivity(intent);
+            }
+        });
 
         TextView name = convertView.findViewById(R.id.videoListRowTitle);
         name.setText(title);
